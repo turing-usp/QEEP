@@ -1,0 +1,8 @@
+TO-DOs:
+
+- Decidir qual o tema do localizador
+- Aprender web-scraping
+- Montar dataset
+- Ler Pyimagesearch
+- Fazer o classificador
+- Fazer o localizador
