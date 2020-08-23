@@ -27,7 +27,7 @@ async def scrapper_link(folder, url):
 
     links = [ENDPOINT + img.get('src') for img in imgs]
 
-    for i, link in enumerate(links):
+    for link in links:
         filename = folder + f"/{uuid4()}.jpg"
         print(filename)
         await getImg(link, filename)
