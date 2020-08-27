@@ -1,11 +1,12 @@
 from util import getImg
+import asyncio
 from uuid import uuid4
 import os
 
-def main():
+async def main():
     for id in range(1, 151):
         folder = f"dataset/{id:03}"
-        url = f"https://assets.pokemon.com/assets/cms2/img/pokedex/full/{id:03}.png"
+        url = f"https://images.gameinfo.io/pokemon/256/{id:03}-00.png"
 
         try:
             os.mkdir(folder)
@@ -16,4 +17,4 @@ def main():
         getImg(url, filename)
 
 if __name__ == "__main__":
-    main()
+    asyncio.run(main())

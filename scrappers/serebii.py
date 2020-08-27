@@ -2,19 +2,18 @@ import requests
 from bs4 import BeautifulSoup
 import os
 from util import getImg
-import asyncio
 import re
 from uuid import uuid4
 
 ENDPOINT = "https://www.serebii.net"
 
-async def main():
+def main():
     for id in range(1,151):
-        folder = f'dataset/{id}'
+        folder = f'dataset/{id:03}'
         url = f"{ENDPOINT}/card/dex/{id:03}.shtml"
-        await scrapper_link(folder, url)
+        scrapper_link(folder, url)
 
-async def scrapper_link(folder, url):
+def scrapper_link(folder, url):
     try:
         os.mkdir(folder)
     except FileExistsError:
@@ -30,8 +29,8 @@ async def scrapper_link(folder, url):
     for link in links:
         filename = folder + f"/{uuid4()}.jpg"
         print(filename)
-        await getImg(link, filename)
+        getImg(link, filename)
 
 if __name__ == "__main__":
-   asyncio.run(main()) 
+   main() 
 
