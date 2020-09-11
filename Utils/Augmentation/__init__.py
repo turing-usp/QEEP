@@ -256,7 +256,7 @@ def randomBrightness(image, change_limits):
     new_image = np.array(new_image , dtype= np.int32)
     return (new_image)
 
-def randomPlace(img, IMG, w, h, W, H, mask, path):
+def randomPlace(img, IMG, mask):
     """
     Descrição
     --------
@@ -270,43 +270,31 @@ def randomPlace(img, IMG, w, h, W, H, mask, path):
     IMG: (PIL Image)
     Imagem em formato Pillow contendo a paisagem de fundo
     
-    w: (int)
-    Largura da imagem objeto
-    
-    h: (int)
-    Altura da imagem objeto
-    
-    W: (int)
-    Largura da imagem de fundo
-    
-    H: (int)
-    Altura da imagem de fundo
-    
     mask: (numpy array)
     Máscara em array numpy para cortar o fundo da imagem objeto a ser adicionada
     
-    path: (str)
-    Caminho do diretório em que serão salvas as novas imagens
-    
     Saídas
     ------
-    Nenhuma
-
+    IMG_copy: (PIL Image)
+    A imagem de fundo modificada com a imagem objeto
+    
+    rect: (tuple)
+    Uma tupla contendo a posição do canto inferior esquerdo de onde a imagem foi adicionada e as dimensões da imagem adicionada
     
     """  
 
-    x = np.random.randint(0, W - w)
-    y = np.random.randint(0, H - h)
+    w, h = img.size[0], img.size[1]
+    W, H = IMG.size[0], IMG.size[1]
+    
+    x = np.random.randint(0, W-w)
+    y = np.random.randint(0, H-h)
     box = (x, y)
-    IMG.paste(img, box, mask)
+    # Como o método "paste" altera diretamente a imagem, 
+    # criamos uma cópia dela
+    IMG_copy = IMG.copy()
+    IMG_copy.paste(img, box, mask)
     
-    nW = int(0.9*W)
-    nH = int(0.9*H)
-
-    nIMG = IMG.resize((nW, nH))
-    nIMG = nIMG.resize((W, H))    
-    
-    nIMG.save(path)
+    return IMG_copy, (x, y, w, h)
 
 def blendImages(objImage, envImage, num_images, path):
     """
@@ -342,12 +330,14 @@ def blendImages(objImage, envImage, num_images, path):
         newObjImage = augObjImage #.convert("RGBA")
         newEnvImage = augEnvImage #.convert("RGBA")      
         
-        w, h = newObjImage.size[0], newObjImage.size[1]
-        W, H = newEnvImage.size[0], newEnvImage.size[1]
-        
         mask = makeMask(newObjImage)
         
-        randomPlace(newObjImage, newEnvImage, w, h, W, H, mask, path+"/"+str(i+1)+".jpg")
+        img, rect = randomPlace(newObjImage, newEnvImage, mask)
+        
+        save_path = path+"/"+str(i+1)+".jpg"
+        img.save(save_path)
+        
+        plt.imshow(img),plt.colorbar(),plt.show()
 
 def applyMask(img_path, n_its=5, step=1, img_show=False):
     """
