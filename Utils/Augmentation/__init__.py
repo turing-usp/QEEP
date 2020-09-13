@@ -170,6 +170,31 @@ def makeMask(image):
     img[img>0] = 255
     return Image.fromarray(img)
 
+def makeMaskP(image):
+    """
+    Descrição
+    --------
+    Função que cria uma máscara em uma imagem modo P se baseando apenas no parâmetro de transparência.
+    É feita uma transformação para passar a imagem para preto e branco e são retiradas as partes
+    transparentes da imagem.
+    
+    Entradas
+    --------
+    image: (PIL Image)
+    
+    Saídas
+    ------
+    img: (PIL Image)
+    Uma imagem em Pillow convertida de um numpy array
+    
+    """
+    transparency = image.info.get('transparency')
+    imgArray = np.asarray(image.copy())
+    mask = np.asarray(image.convert('L')).copy()
+    mask[imgArray == transparency] = 0
+    mask[imgArray != transparency] = 255
+    return Image.fromarray(mask)
+
 def randomEnvAugment(image, prob):
     """
     Descrição
@@ -208,7 +233,7 @@ def randomEnvAugment(image, prob):
         
     return image
 
-def randomContrast(image, change_limits):    
+def randomContrast(image, change_limits):
     """
     Descrição
     --------
@@ -327,10 +352,16 @@ def blendImages(objImage, envImage, num_images, path):
         augObjImage = randomObjAugment(objImage, prob)
         augEnvImage = randomEnvAugment(envImage, prob)
         
-        newObjImage = augObjImage #.convert("RGBA")
-        newEnvImage = augEnvImage #.convert("RGBA")      
+        newObjImage = augObjImage
+        newEnvImage = augEnvImage
         
-        mask = makeMask(newObjImage)
+        mode = newObjImage.mode
+        if mode == 'RGBA':
+            mask = newObjImage
+        elif mode == 'P':
+            mask = makeMaskP(newObjImage)
+        else:
+            mask = makeMask(newObjImage)
         
         img, rect = randomPlace(newObjImage, newEnvImage, mask)
         
