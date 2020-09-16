@@ -323,7 +323,7 @@ def randomPlace(img, IMG, mask):
     
     return IMG_copy, (x, y, w, h)
 
-def blendImages(objImages, imgLabels, envImage, num_images, save_path, json_path, back_width, back_height):
+def blendImages(objImages, imgLabels, envImage, num_images, save_path, back_width, back_height):
     """
     Descrição
     --------
@@ -444,10 +444,15 @@ def applyMask(img_path, n_its=5, step=1, img_show=False):
     return img_masked
 
 
-def poke_aug(background_folder= './Paisagens/', pokemon_folder= './Pokemon_transparent/', mode = 'unico'):
+def poke_aug(background_folder, pokemon_folder):
     # Função que cria o dataset augmentado de pokemons
     pokemon_lib = os.listdir(pokemon_folder)
     backgrounds = os.listdir(background_folder)
+
+    '''
+    Bloco que percorre todas as imagens de pokemons e todos os backgrounds
+    '''
+
     for background in backgrounds:
         background_img = Image.open(background_folder + background)
         width, height = background_img.size
@@ -459,7 +464,7 @@ def poke_aug(background_folder= './Paisagens/', pokemon_folder= './Pokemon_trans
                 poke_img = Image.open(pokemon_folder + pokemon_label + "/" + poke)
                 save_path = poke[:-4] + '_' + background[:-4]
                 try:
-                    blendImages([poke_img], [pokemon_label], background_img, num_images= 5, save_path= save_path, json_path='./json',
+                    blendImages([poke_img], [pokemon_label], background_img, num_images= 5, save_path= save_path,
                                  back_width = width, back_height = height)
                 except:
                     print('erro')
@@ -467,26 +472,6 @@ def poke_aug(background_folder= './Paisagens/', pokemon_folder= './Pokemon_trans
 
 
 if __name__ == "__main__":
-    poke_aug()
-
-'''
-    dick = {}
-
-    for background in backgrounds:
-        paisagem = Image.open(backgroud_folder + background)
-        #plt.imshow(paisagem), plt.colorbar(),plt.show()
-        for pokemon in pokemons:
-            images = os.listdir(pokemon_folder+"/"+pokemon)
-
-            for img in images: # pra quando tiver pastas com pokemons
-                poke = Image.open(pokemon_folder + pokemon+ "/" + img)
-                #plt.imshow(poke),plt.colorbar(),plt.show()
-                try:
-                    blendImages(poke, paisagem, 10, "./Augmentadas", nome = pokemon + "_" + background[:-4]+"_" + img, dick = dick)
-                except:
-                    print("erro")
-
-    df = pd.DataFrame.from_dict(dick, orient='index')
-    df.head()
-    # df.to_csv("pokedict.csv") 
-'''
+    background_folder= './Paisagens/'
+    pokemon_folder= './Pokemon_transparent/'
+    poke_aug(background_folder=background_folder, pokemon_folder=pokemon_folder)
