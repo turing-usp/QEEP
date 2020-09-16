@@ -2,6 +2,7 @@ from PIL import Image, ImageOps
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
+import json
 
 def changeImageSize(maxWidth, maxHeight, image):
     """
@@ -79,7 +80,7 @@ def rotate(image, angle):
     
     """  
     color = image.getpixel((0,0))
-    return image.rotate(angle, Image.NEAREST, expand=1, fillcolor=color)
+    return image.rotate(angle, Image.NEAREST, expand=1)#, fillcolor=color)
 
 def randomCrop(img, width, height):
     """
@@ -218,7 +219,7 @@ def randomEnvAugment(image, prob):
     if np.random.random() < prob:
         degree = np.random.randint(low=-10, high=10, size=1)[0]
         color = image.getpixel((image.size[0]//2,image.size[1]//2))
-        image = image.rotate(degree, Image.NEAREST, fillcolor=color)
+        image = image.rotate(degree, Image.NEAREST)#, fillcolor=color)
         
     maxWidth = image.size[0]
     maxHeight = image.size[1]
@@ -297,7 +298,8 @@ def randomPlace(img, IMG, mask):
     
     mask: (numpy array)
     Máscara em array numpy para cortar o fundo da imagem objeto a ser adicionada
-    
+
+
     Saídas
     ------
     IMG_copy: (PIL Image)
@@ -314,23 +316,25 @@ def randomPlace(img, IMG, mask):
     x = np.random.randint(0, W-w)
     y = np.random.randint(0, H-h)
     box = (x, y)
-    # Como o método "paste" altera diretamente a imagem, 
-    # criamos uma cópia dela
+
     IMG_copy = IMG.copy()
     IMG_copy.paste(img, box, mask)
     
     return IMG_copy, (x, y, w, h)
 
-def blendImages(objImage, envImage, num_images, path):
+def blendImages(objImages, imgLabels, envImage, num_images, path):
     """
     Descrição
     --------
-    Junta uma imagem objeto em uma imagem de fundo aleatoriamente, aplicando funções de augmentation
+    Junta imagens objetos em uma imagem de fundo aleatoriamente, aplicando funções de augmentation
     
     Entradas
     --------
-    objImage: (PIL image)
-    Imagem em formato Pillow contendo o objeto a ser adicionado ao fundo
+    objImages: (list with PIL images)
+    Imagens em formato Pillow contendo os objetos a serem adicionados ao fundo
+
+    imgLabels: (list)
+    Labels das imagens em objImages
 
     envImage: (PIL image)
     Imagem em formato Pillow contendo a paisagem de fundo
@@ -348,25 +352,36 @@ def blendImages(objImage, envImage, num_images, path):
     
     """    
     prob = 0.7
+    assert len(imgLabels) == len(objImages), "É necessário que cada objeto tenha um label" 
     for i in range(num_images):
-        augObjImage = randomObjAugment(objImage, prob)
+        augObjImages = []
+        for objImage in objImages:
+            augObjImage = randomObjAugment(objImage, prob)
+            augObjImages.append(augObjImage)
+
         augEnvImage = randomEnvAugment(envImage, prob)
-        
-        newObjImage = augObjImage
         newEnvImage = augEnvImage
-        
-        mode = newObjImage.mode
-        if mode == 'RGBA':
-            mask = newObjImage
-        elif mode == 'P':
-            mask = makeMaskP(newObjImage)
-        else:
-            mask = makeMask(newObjImage)
-        
-        img, rect = randomPlace(newObjImage, newEnvImage, mask)
+
+        img_info = {}
+        for img_label, augObjImage in zip(imgLabels, augObjImages):
+            newObjImage = augObjImage
+            mode = newObjImage.mode
+            if mode == 'RGBA':
+                mask = newObjImage
+            elif mode == 'P':
+                mask = makeMaskP(newObjImage)
+            else:
+                mask = makeMask(newObjImage)
+            
+            img, rect = randomPlace(newObjImage, newEnvImage, mask)
+            newEnvImage = img
+            img_info[img_label] = rect
         
         save_path = path+"/"+str(i+1)+".jpg"
         img.save(save_path)
+
+        with open(f'{path}/{str(i+1)}.json', 'w') as file:
+            file.write(json.dumps(img_info)) 
         
         plt.imshow(img),plt.colorbar(),plt.show()
 
