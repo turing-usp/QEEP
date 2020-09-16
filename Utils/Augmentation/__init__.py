@@ -3,6 +3,7 @@ import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 import json
+import os
 
 def changeImageSize(maxWidth, maxHeight, image):
     """
@@ -322,7 +323,7 @@ def randomPlace(img, IMG, mask):
     
     return IMG_copy, (x, y, w, h)
 
-def blendImages(objImages, imgLabels, envImage, num_images, path):
+def blendImages(objImages, imgLabels, envImage, num_images, save_path, json_path, back_width, back_height):
     """
     Descrição
     --------
@@ -363,6 +364,7 @@ def blendImages(objImages, imgLabels, envImage, num_images, path):
         newEnvImage = augEnvImage
 
         img_info = {}
+        
         for img_label, augObjImage in zip(imgLabels, augObjImages):
             newObjImage = augObjImage
             mode = newObjImage.mode
@@ -374,16 +376,26 @@ def blendImages(objImages, imgLabels, envImage, num_images, path):
                 mask = makeMask(newObjImage)
             
             img, rect = randomPlace(newObjImage, newEnvImage, mask)
+            rect = (rect[0]/back_width, rect[1]/back_height, rect[2]/back_width, rect[3]/back_height)
             newEnvImage = img
             img_info[img_label] = rect
-        
-        save_path = path+"/"+str(i+1)+".jpg"
-        img.save(save_path)
 
-        with open(f'{path}/{str(i+1)}.json', 'w') as file:
-            file.write(json.dumps(img_info)) 
-        
-        plt.imshow(img),plt.colorbar(),plt.show()
+        # Salva a pasta com as imagens
+        img_path = 'data/dataset/imagens/' + save_path + "_" + str(i+1)+".jpg"
+        img.save(img_path)
+
+        # Salva os rótulos
+        txt_path = 'data/dataset/rotulos/'
+        with open(f'{txt_path}/{save_path}_{str(i+1)}.txt', 'w') as file:
+            for label in imgLabels:
+                file.write(f'{label} {rect[0]} {rect[1]} {rect[2]} {rect[3]}')
+                file.close()
+
+        # Salva os caminhos
+        with open('data/dataset/train.txt', 'a') as file:
+            file.write(f'{img_path} \n')
+            file.close()
+        # plt.imshow(img),plt.colorbar(),plt.show()
 
 def applyMask(img_path, n_its=5, step=1, img_show=False):
     """
@@ -431,3 +443,50 @@ def applyMask(img_path, n_its=5, step=1, img_show=False):
         plt.show()    
     return img_masked
 
+
+def poke_aug(background_folder= './Paisagens/', pokemon_folder= './Pokemon_transparent/', mode = 'unico'):
+    # Função que cria o dataset augmentado de pokemons
+    pokemon_lib = os.listdir(pokemon_folder)
+    backgrounds = os.listdir(background_folder)
+    for background in backgrounds:
+        background_img = Image.open(background_folder + background)
+        width, height = background_img.size
+
+        for pokemon_label in pokemon_lib:
+            pokemon_list = os.listdir(pokemon_folder + "/" + pokemon_label)
+            
+            for poke in pokemon_list:
+                poke_img = Image.open(pokemon_folder + pokemon_label + "/" + poke)
+                save_path = poke[:-4] + '_' + background[:-4]
+                try:
+                    blendImages([poke_img], [pokemon_label], background_img, num_images= 5, save_path= save_path, json_path='./json',
+                                 back_width = width, back_height = height)
+                except:
+                    print('erro')
+
+
+
+if __name__ == "__main__":
+    poke_aug()
+
+'''
+    dick = {}
+
+    for background in backgrounds:
+        paisagem = Image.open(backgroud_folder + background)
+        #plt.imshow(paisagem), plt.colorbar(),plt.show()
+        for pokemon in pokemons:
+            images = os.listdir(pokemon_folder+"/"+pokemon)
+
+            for img in images: # pra quando tiver pastas com pokemons
+                poke = Image.open(pokemon_folder + pokemon+ "/" + img)
+                #plt.imshow(poke),plt.colorbar(),plt.show()
+                try:
+                    blendImages(poke, paisagem, 10, "./Augmentadas", nome = pokemon + "_" + background[:-4]+"_" + img, dick = dick)
+                except:
+                    print("erro")
+
+    df = pd.DataFrame.from_dict(dick, orient='index')
+    df.head()
+    # df.to_csv("pokedict.csv") 
+'''
