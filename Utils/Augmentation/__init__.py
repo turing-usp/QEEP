@@ -3,6 +3,7 @@ import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 import json
+import os
 
 def changeImageSize(maxWidth, maxHeight, image):
     """
@@ -319,10 +320,12 @@ def randomPlace(img, IMG, mask):
 
     IMG_copy = IMG.copy()
     IMG_copy.paste(img, box, mask)
+
+    x, y, w, h = x/W, y/H, w/W, h/H
     
     return IMG_copy, (x, y, w, h)
 
-def blendImages(objImages, imgLabels, envImage, num_images, path):
+def blendImages(objImages, imgLabels, envImage, path_imagens, path_txt):
     """
     Descrição
     --------
@@ -339,11 +342,11 @@ def blendImages(objImages, imgLabels, envImage, num_images, path):
     envImage: (PIL image)
     Imagem em formato Pillow contendo a paisagem de fundo
     
-    num_images: (int)
-    Número de imagens a serem criadas
-    
-    path: (str)
+    path_imagens: (str)
     Caminho do diretório em que serão salvas as novas imagens
+
+    path_txt: (str)
+    Caminho do diretório em que serão salvas os txt
     
     Saídas
     ------
@@ -353,37 +356,42 @@ def blendImages(objImages, imgLabels, envImage, num_images, path):
     """    
     prob = 0.7
     assert len(imgLabels) == len(objImages), "É necessário que cada objeto tenha um label" 
-    for i in range(num_images):
-        augObjImages = []
-        for objImage in objImages:
-            augObjImage = randomObjAugment(objImage, prob)
-            augObjImages.append(augObjImage)
+    augObjImages = []
+    for objImage in objImages:
+        augObjImage = randomObjAugment(objImage, prob)
+        augObjImages.append(augObjImage)
 
-        augEnvImage = randomEnvAugment(envImage, prob)
-        newEnvImage = augEnvImage
+    augEnvImage = randomEnvAugment(envImage, prob)
+    newEnvImage = augEnvImage
 
-        img_info = {}
-        for img_label, augObjImage in zip(imgLabels, augObjImages):
-            newObjImage = augObjImage
-            mode = newObjImage.mode
-            if mode == 'RGBA':
-                mask = newObjImage
-            elif mode == 'P':
-                mask = makeMaskP(newObjImage)
-            else:
-                mask = makeMask(newObjImage)
+    img_info = {}
+    for img_label, augObjImage in zip(imgLabels, augObjImages):
+        newObjImage = augObjImage
+        mode = newObjImage.mode
+        if mode == 'RGBA':
+            mask = newObjImage
+        elif mode == 'P':
+            mask = makeMaskP(newObjImage)
+        else:
+            mask = makeMask(newObjImage)
             
-            img, rect = randomPlace(newObjImage, newEnvImage, mask)
-            newEnvImage = img
-            img_info[img_label] = rect
+        img, rect = randomPlace(newObjImage, newEnvImage, mask)
+        newEnvImage = img
+        img_info[img_label] = rect
         
-        save_path = path+"/"+str(i+1)+".jpg"
-        img.save(save_path)
+    nome = f"augmented_{np.random.randint(low=2200, high=60000)}"
+    nome_img = f"{nome}.png"
+    save_im_path = os.path.join(path_imagens, nome_img)
+    img.save(save_im_path)
 
-        with open(f'{path}/{str(i+1)}.json', 'w') as file:
-            file.write(json.dumps(img_info)) 
+    nome_txt = f"{nome}.txt"
+    with open(os.path.join(path_txt, nome_txt), 'w') as file:
+        for label, rect in img_info.items():
+            file.write(f"{label} {rect[0]} {rect[1]} {rect[2]} {rect[3]}")
+            file.write("\n")
+        file.close()
         
-        plt.imshow(img),plt.colorbar(),plt.show()
+    plt.imshow(img),plt.colorbar(),plt.show()
 
 def applyMask(img_path, n_its=5, step=1, img_show=False):
     """
@@ -431,3 +439,56 @@ def applyMask(img_path, n_its=5, step=1, img_show=False):
         plt.show()    
     return img_masked
 
+def generateRandomDatatset(numPics, pokemons_path, backgrounds_path, num_max_pokemons=5, num_min_pokemons=1):
+    """
+    Descrição
+    ---------
+    Gerar um número aleátorio de imagens com base em diretorios contendo pastas com imagens de pokemons e outra pasta contendo imagens de 
+    
+    Entradas
+    --------
+    numPics: (int)
+    Número de imagens que se quer gerar
+    
+    pokemons_path: (str)
+    Path da pasta que contem pastas com as pastas de cada pokemon, cada pasta de pokemon deve conter imagens daquele pokemon
+    
+    backgrounds_path: (str)
+    Path da pasta que contem as fotos de background
+    
+    """  
+
+    #criar pasta de labels e de imagens 
+    DATASET_PATH = "Dataset"
+    IMAGES_PATH = os.path.join(DATASET_PATH, "imagens")
+    LABELS_PATH = os.path.join(DATASET_PATH, "rotulos")
+
+    os.mkdir(DATASET_PATH)
+    os.mkdir(IMAGES_PATH)
+    os.mkdir(LABELS_PATH)
+
+    pokemons_types_paths = os.listdir(pokemons_path)
+    backgrounds_paths = os.listdir(backgrounds_path)
+
+    for i in range(numPics):
+        #escolher quantos pokemons tera nessa imagem
+        num_pokemons = np.random.randint(low=num_min_pokemons, high=num_max_pokemons)
+        #escolher os n pokemons
+        pokemons_chosen_paths = np.random.choice(pokemons_types_paths, size=num_pokemons)
+        pokemons_chosen_paths = [os.path.join(pokemons_path,pokemons_chosen_path) for pokemons_chosen_path in pokemons_chosen_paths]
+        #lista de labels
+        labels = [os.path.basename(os.path.normpath(poke)) for poke in pokemons_chosen_paths]
+        #escolher as imagens de cada pokemon
+        objImages_poks = []
+        for chosen_pokemon_path in pokemons_chosen_paths:
+            pokemons_im_paths = os.listdir(chosen_pokemon_path)
+            im_poke_path = np.random.choice(pokemons_im_paths)
+            im_poke_path = os.path.join(chosen_pokemon_path, im_poke_path)
+            poke_im = Image.open(im_poke_path)
+            objImages_poks.append(poke_im)
+        #escolher background
+        background_chosen_path = np.random.choice(backgrounds_paths)
+        background_chosen_path = os.path.join(backgrounds_path, background_chosen_path)
+        back = Image.open(background_chosen_path)
+
+        blendImages(objImages_poks, labels, back, IMAGES_PATH, LABELS_PATH)

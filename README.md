@@ -2,7 +2,7 @@
 
 ## Grupo Turing
 # Visão Computacional: Localização de Objetos
-#### Por: [Eduardo Eiras](https://github.com/dueiras);  [Guilherme Salustiano](https://github.com/guissalustiano); [Luis Santos](https://github.com/luizsantos-1); [Noel Eliezer](https://github.com/anor4k); [Rafael Coelho](https://github.com/rafael-acoelho); [Rodrigo Estevam](https://github.com/materloki); [Wesley de Almeida](https://github.com/WesPereira)
+#### Por: [Eduardo Eiras](https://github.com/dueiras);  [Camilla Fonseca](https://github.com/fonsecamilla); [Guilherme Salustiano](https://github.com/guissalustiano); [Luis Santos](https://github.com/luizsantos-1); [Luísa Heise](https://github.com/luisaheise); [Noel Eliezer](https://github.com/anor4k); [Rafael Coelho](https://github.com/rafael-acoelho); [Rodrigo Estevam](https://github.com/materloki); [Wesley de Almeida](https://github.com/WesPereira)
 Projeto da área Visão Computacional com o foco de fazer uma rede classificadora de objetos e a utilizar para criar um localizador de objetos.
 
 ## Qual a diferença ?
