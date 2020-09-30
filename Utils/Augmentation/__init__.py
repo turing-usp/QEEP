@@ -81,7 +81,7 @@ def rotate(image, angle):
     
     """  
     color = image.getpixel((0,0))
-    return image.rotate(angle, Image.NEAREST, expand=1)#, fillcolor=color)
+    return image.rotate(angle, Image.NEAREST, expand=1, fillcolor=color)
 
 def randomCrop(img, width, height):
     """
@@ -220,7 +220,7 @@ def randomEnvAugment(image, prob):
     if np.random.random() < prob:
         degree = np.random.randint(low=-10, high=10, size=1)[0]
         color = image.getpixel((image.size[0]//2,image.size[1]//2))
-        image = image.rotate(degree, Image.NEAREST)#, fillcolor=color)
+        image = image.rotate(degree, Image.NEAREST, fillcolor=color)
         
     maxWidth = image.size[0]
     maxHeight = image.size[1]
@@ -439,7 +439,7 @@ def applyMask(img_path, n_its=5, step=1, img_show=False):
         plt.show()    
     return img_masked
 
-def generateRandomDatatset(numPics, pokemons_path, backgrounds_path, num_max_pokemons=5, num_min_pokemons=1):
+def generateRandomDatatset(numPics, pokemons_path, backgrounds_path, mean_number_pokemons=2, std_number_pokemons=1):
     """
     Descrição
     ---------
@@ -463,7 +463,8 @@ def generateRandomDatatset(numPics, pokemons_path, backgrounds_path, num_max_pok
     IMAGES_PATH = os.path.join(DATASET_PATH, "imagens")
     LABELS_PATH = os.path.join(DATASET_PATH, "rotulos")
 
-    os.mkdir(DATASET_PATH)
+    if not(os.path.exists(DATASET_PATH)):
+        os.mkdir(DATASET_PATH)
     os.mkdir(IMAGES_PATH)
     os.mkdir(LABELS_PATH)
 
@@ -472,7 +473,8 @@ def generateRandomDatatset(numPics, pokemons_path, backgrounds_path, num_max_pok
 
     for i in range(numPics):
         #escolher quantos pokemons tera nessa imagem
-        num_pokemons = np.random.randint(low=num_min_pokemons, high=num_max_pokemons)
+        num_pokemons = int(max(np.random.normal(mean_number_pokemons, std_number_pokemons),1))
+
         #escolher os n pokemons
         pokemons_chosen_paths = np.random.choice(pokemons_types_paths, size=num_pokemons)
         pokemons_chosen_paths = [os.path.join(pokemons_path,pokemons_chosen_path) for pokemons_chosen_path in pokemons_chosen_paths]
@@ -486,9 +488,24 @@ def generateRandomDatatset(numPics, pokemons_path, backgrounds_path, num_max_pok
             im_poke_path = os.path.join(chosen_pokemon_path, im_poke_path)
             poke_im = Image.open(im_poke_path)
             objImages_poks.append(poke_im)
-        #escolher background
-        background_chosen_path = np.random.choice(backgrounds_paths)
-        background_chosen_path = os.path.join(backgrounds_path, background_chosen_path)
-        back = Image.open(background_chosen_path)
+        
+        size_problem = True
+        while size_problem:
+            #escolher background
+            background_chosen_path = np.random.choice(backgrounds_paths)
+            background_chosen_path = os.path.join(backgrounds_path, background_chosen_path)
+            back = Image.open(background_chosen_path)
+
+            #detectando se a imagem de fundo é muito pequena para esse caso:
+            H = np.asarray(back).shape[0]
+            W = np.asarray(back).shape[1]
+
+            size_problem = False
+            for poke_img in objImages_poks:
+                h = np.asarray(poke_img).shape[0]
+                w = np.asarray(poke_img).shape[1]
+                size_problem = (h>H) or (w>W)
+        
+        
 
         blendImages(objImages_poks, labels, back, IMAGES_PATH, LABELS_PATH)
