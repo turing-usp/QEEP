@@ -443,7 +443,8 @@ def generateRandomDataset(numPics, pokemons_path, backgrounds_path, mean_number_
     """
     Descrição
     ---------
-    Gerar um número aleátorio de imagens com base em diretorios contendo pastas com imagens de pokemons e outra pasta contendo imagens de 
+    Gerar um número aleátorio de imagens com base em diretorios contendo pastas com imagens de pokemons e 
+    outra pasta contendo imagens de paisagens
     
     Entradas
     --------
@@ -455,6 +456,12 @@ def generateRandomDataset(numPics, pokemons_path, backgrounds_path, mean_number_
     
     backgrounds_path: (str)
     Path da pasta que contem as fotos de background
+
+    mean_number_pokemons: (int) Default = 2
+    A média da distribuição normal do número de pokemons que serão adicionados aleatoriamente na paisagem. Caso não especificado, este número é igual a 2.
+
+    std_number_pokemons: (int) Default = 1)
+    Desvio padrão da distribuição normal do número de pokemons que serão adicionados aleatoriamente na paisagem. Caso não especificado, este número é igual a 1.
     
     """  
 
