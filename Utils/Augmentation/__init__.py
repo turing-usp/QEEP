@@ -379,13 +379,13 @@ def blendImages(objImages, imgLabels, envImage, path_imagens, path_txt):
         newEnvImage = img
         img_info[img_label] = rect
         
-    nome = f"augmented_{np.random.randint(low=2200, high=60000)}"
-    nome_img = f"{nome}.png"
-    save_im_path = os.path.join(path_imagens, nome_img)
+    name = f"augmented_{np.random.randint(low=2200, high=60000)}"
+    name_img = f"{name}.png"
+    save_im_path = os.path.join(path_imagens, name_img)
     img.save(save_im_path)
 
-    nome_txt = f"{nome}.txt"
-    with open(os.path.join(path_txt, nome_txt), 'w') as file:
+    name_txt = f"{name}.txt"
+    with open(os.path.join(path_txt, name_txt), 'w') as file:
         for label, rect in img_info.items():
             file.write(f"{label} {rect[0]} {rect[1]} {rect[2]} {rect[3]}")
             file.write("\n")
@@ -439,7 +439,7 @@ def applyMask(img_path, n_its=5, step=1, img_show=False):
         plt.show()    
     return img_masked
 
-def generateRandomDatatset(numPics, pokemons_path, backgrounds_path, mean_number_pokemons=2, std_number_pokemons=1):
+def generateRandomDataset(numPics, pokemons_path, backgrounds_path, mean_number_pokemons=2, std_number_pokemons=1):
     """
     Descrição
     ---------
