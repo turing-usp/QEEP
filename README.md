@@ -36,9 +36,17 @@ Os arquivos <code>img*.txt</code> são arquivos que seguem a seguinte estrutura:
 ...
 ```
 Nesses arquivos, o primeiro parâmetro representa a classe do objeto que será classificado seguido da posição do centro dele (x_center, y_center). Em seguida, temos a largura e altura da caixa que envolve o objeto a ser classificado. **Vale ressaltar que todas as medidas são relativas ao tamanho da imagem a ser classificada**. Cada linha do arquivo contém um dos objetos a ser classificado na imagem.<br>
+As classes dos objetos devem ser representadas de maneira sequencial, começando a partir do 0 até N-1, onde N é a quantidade de objetos que se deseja classificar/detectar. O arquivo <code>pokemons.names</code> contém os nomes das classes empregadas nos arquivos <code>img*.txt</code>. Nesse arquivo, cada linha representa o nome da respectiva classe, ou seja, na linha 0 teremos o nome da classe de objetos representada pelo número 0 nos arquivos <code>img*.txt</code>. Veja abaixo um exemplo de arquivo <code>*.names</code>:<br>
+```
+bulbasaur
+ivysaur
+venusaur
+...
+```
 Os arquivos <code>treino.txt</code> e <code>validacao.txt</code> contém o caminho relativo (considerando a raiz do projeto) para as imagens. Veja:
 ```
 ../data/dataset/imagens/img1.jpg
 ../data/dataset/imagens/img2.jpg
 ...
 ```
+Por fim, vale ressaltar que para maiores facilidades no processo de treino foi definido um tamanho fixo para redimensionamento das imagens de 416x416 pixels.
