@@ -32,15 +32,27 @@ def createDirIfNotExist(path: Path):
         os.makedirs(path)
 
 
+def _defineResilientSession() -> requests.Session:
+    # previne timeouts
+    session = requests.Session()
+    retry = Retry(connect=5, backoff_factor=0.5)
+    adapter = HTTPAdapter(max_retries=retry)
+    session.mount('http://', adapter)
+    session.mount('https://', adapter)
+    return session
+
+
+def _createHttpClient():
+    session = _defineResilientSession()
+    return session.get
+
+
 def downloadImgs(urls: List[str]) -> List[bytes]:
-    for url in urls:
-        session = requests.Session()
-        # previne timeouts
-        retry = Retry(connect=5, backoff_factor=0.5)
-        adapter = HTTPAdapter(max_retries=retry)
-        session.mount('http://', adapter)
-        session.mount('https://', adapter)
-        img_req = session.get(url)
+    httpClientget = _createHttpClient()
+    imgs_reqs = [httpClientget(u) for u in urls]
+    for img_req in imgs_reqs:
+        if img_req is None:
+            continue
 
         if img_req.status_code != 200:
             continue

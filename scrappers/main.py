@@ -21,9 +21,10 @@ def getAllImagesURLbyId(id: int) -> List[str]:
 
 
 if __name__ == "__main__":
-    imgs = ["https://images.gameinfo.io/pokemon/256/001-00-shiny.webp"]
-    bin_img = list(acess.downloadImgs(imgs))[0]
+    imgsURL = getAllImagesURLbyId(1)
+    imgs = acess.downloadImgs(imgsURL)
 
     p = Path('../data')
     acess.createDirIfNotExist(p)
-    acess.writeImage(p, bin_img)
+    for img in imgs:
+        acess.writeImage(p, img)
