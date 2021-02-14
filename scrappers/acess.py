@@ -27,11 +27,6 @@ def _fileExtension(file) -> str:
     return "." + kind.extension
 
 
-def createDirIfNotExist(path: Path):
-    if not path.exists():
-        os.makedirs(path)
-
-
 def _defineResilientSession() -> requests.Session:
     # previne timeouts
     session = requests.Session()
@@ -45,6 +40,11 @@ def _defineResilientSession() -> requests.Session:
 def _createHttpClient():
     session = _defineResilientSession()
     return session.get
+
+
+def createDirIfNotExist(path: Path):
+    if not path.exists():
+        os.makedirs(path)
 
 
 def downloadImgs(urls: List[str]) -> List[bytes]:
@@ -64,16 +64,26 @@ def downloadImgs(urls: List[str]) -> List[bytes]:
         yield img
 
 
-def writeImage(path: Path, img: bytes):
-    assert(path.exists())
-    assert(path.is_dir())
+def writeImage(dir_path: Path, img: bytes):
+    """
+    Salva a imagem a partir de um diretorio,
+    gerando seu nome a partir do hash de seu conteudo
+    """
+    assert(dir_path.exists())
+    assert(dir_path.is_dir())
 
     hashname = md5(img).hexdigest()
     filename = hashname + _fileExtension(img)
-    filepath = path / filename
+    filepath = dir_path / filename
 
     if filepath.exists():
         print(filepath, "já existe")
 
     with open(filepath, mode="wb") as f:
         f.write(img)
+
+    return filepath
+
+
+def writeImages(base_path: Path, imgs: List[bytes]):
+    return [writeImage(base_path, img) for img in imgs]
