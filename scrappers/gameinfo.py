@@ -1,20 +1,16 @@
-from util import getImg
-import asyncio
-from uuid import uuid4
-import os
+"""
+Site base: https://gameinfo.io
+"""
 
-async def main():
-    for id in range(1, 151):
-        folder = f"dataset/{id:03}"
-        url = f"https://images.gameinfo.io/pokemon/256/{id:03}-00.png"
+from typing import List
 
-        try:
-            os.mkdir(folder)
-        except FileExistsError:
-            pass
-        filename = folder + f"/{uuid4()}.png"
-        print(filename)
-        getImg(url, filename)
+
+def getImagesURLbyId(id: int) -> List[str]:
+    normalImg = f"https://images.gameinfo.io/pokemon/256/{id:03}-00.png"
+    shineImg = f"https://images.gameinfo.io/pokemon/256/{id:03}-00-shiny.png"
+    return [normalImg, shineImg]
+
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    for id in range(1, 3):
+        print(getImagesURLbyId(id))

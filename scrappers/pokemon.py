@@ -1,19 +1,14 @@
-from util import getImg
-from uuid import uuid4
-import os
+"""
+Site base: https://pokemon.com
+"""
 
-def main():
-    for id in range(1, 151):
-        folder = f"dataset/{id:03}"
-        url = f"https://assets.pokemon.com/assets/cms2/img/pokedex/full/{id:03}.png"
+from typing import List
 
-        try:
-            os.mkdir(folder)
-        except FileExistsError:
-            pass
-        filename = folder + f"/{uuid4()}.png"
-        print(filename)
-        getImg(url, filename)
+
+def getImagesURLbyId(id: int) -> List[str]:
+    return [f"https://assets.pokemon.com/assets/cms2/img/pokedex/full/{id:03}.png"]
+
 
 if __name__ == "__main__":
-    main()
+    for id in range(1, 3):
+        print(getImagesURLbyId(id))

@@ -1,36 +1,25 @@
+"""
+Site base: https://www.serebii.net
+"""
+
+from typing import List
 import requests
-from bs4 import BeautifulSoup
-import os
-from util import getImg
 import re
-from uuid import uuid4
+from bs4 import BeautifulSoup
 
-ENDPOINT = "https://www.serebii.net"
 
-def main():
-    for id in range(1,151):
-        folder = f'dataset/{id:03}'
-        url = f"{ENDPOINT}/card/dex/{id:03}.shtml"
-        scrapper_link(folder, url)
-
-def scrapper_link(folder, url):
-    try:
-        os.mkdir(folder)
-    except FileExistsError:
-        pass
+def getImagesURLbyId(id: int) -> List[str]:
+    url = f"https://www.serebii.net/card/dex/{id:03}.shtml"
 
     response = requests.get(url)
     soup = BeautifulSoup(response.text)
-
     imgs = soup.find_all("img", {"src": re.compile("/card/th/.*.jpg")})
+    links = ["https://www.serebii.net" + img.get('src') for img in imgs]
 
-    links = [ENDPOINT + img.get('src') for img in imgs]
+    artURL = f"https://www.serebii.net/art/th/{id}.png"
+    return [artURL] + links
 
-    for link in links:
-        filename = folder + f"/{uuid4()}.jpg"
-        print(filename)
-        getImg(link, filename)
 
 if __name__ == "__main__":
-   main() 
-
+    for id in range(1, 3):
+        print(getImagesURLbyId(id))
