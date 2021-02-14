@@ -1,0 +1,3 @@
+requests
+pokebase
+bs4

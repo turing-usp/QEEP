@@ -7,8 +7,6 @@ import requests
 import pokebase as pb
 from hashlib import md5
 
-ENDPOINT = "https://www.pokemondb.net"
-
 
 def _imgName2url(imgName: str):
     filename = imgName.strip("File:").replace(" ", "_").encode("utf-8")
@@ -28,7 +26,7 @@ def getImagesURLbyId(id: int) -> List[str]:
         "action": "query",
         "list": "categorymembers",
         "cmtitle": "Category:" + pokemon.name,
-        "cmlimit": "max",
+        "cmlimit": "max",  # padrão 500
         "cmtype": "file",
         "format": "json",
     }

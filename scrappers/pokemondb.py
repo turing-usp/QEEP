@@ -8,8 +8,6 @@ import re
 from bs4 import BeautifulSoup
 import pokebase as pb
 
-ENDPOINT = "https://www.pokemondb.net"
-
 
 def getImagesURLbyId(id: int) -> List[str]:
     pokemon = pb.pokemon(id)
