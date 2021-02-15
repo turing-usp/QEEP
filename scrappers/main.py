@@ -6,13 +6,15 @@ import pokebase as pb
 from functools import partial
 from multiprocessing import Pool
 
-import bulbapedia
+# import bulbapedia
 import gameinfo
 import pokemondb
 import pokemon
 import serebii
 
 import acess
+
+_NUMBER_POOLS = 16
 
 
 def getAllImagesURLbyId(id: int) -> List[str]:
@@ -38,7 +40,7 @@ def getAllImagesAndSaveById(id: int, base_path: Path) -> List[Path]:
 
 def getAllImagesAndSaveByIds(ids: List[int], base_path: Path) -> List[Path]:
     f = partial(getAllImagesAndSaveById, base_path=base_path)
-    with Pool(16) as p:
+    with Pool(_NUMBER_POOLS) as p:
         p.map(f, ids)
 
 
@@ -51,7 +53,7 @@ def _main():
                         type=int, help='pokemon inicial')
     parser.add_argument('-e', '--end', default=151, type=int,
                         help='ultimo pokemon a ser procurado')
-    parser.add_argument('-p', '--path', default='./data',
+    parser.add_argument('-p', '--path', default='../data',
                         type=str, help='diretorio que será salvo')
 
     args = parser.parse_args()
