@@ -10,7 +10,9 @@ from multiprocessing import Pool
 import gameinfo
 import pokemondb
 import pokemon
+import pokeCards
 import serebii
+# import zerochan
 
 import acess
 
@@ -23,7 +25,9 @@ def getAllImagesURLbyId(id: int) -> List[str]:
     acc += pokemon.getImagesURLbyId(id)
     acc += gameinfo.getImagesURLbyId(id)
     acc += serebii.getImagesURLbyId(id)
+    acc += pokeCards.getImagesURLbyId(id)
     acc += pokemondb.getImagesURLbyId(id)
+    # acc += zerochan.getImagesURLbyId(id)
     # acc += bulbapedia.getImagesURLbyId(id)
     return acc
 
