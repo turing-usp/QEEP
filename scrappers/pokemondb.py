@@ -16,7 +16,7 @@ def getImagesURLbyId(id: int) -> List[str]:
     url = f"https://pokemondb.net/sprites/{pokemon.name}"
 
     response = requests.get(url)
-    soup = BeautifulSoup(response.text)
+    soup = BeautifulSoup(response.text, features="lxml")
 
     pattern = r"https://img.pokemondb.net/sprites/.*"
     imgs = soup.find_all("img", {"src": re.compile(pattern)})

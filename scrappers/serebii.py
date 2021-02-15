@@ -14,7 +14,7 @@ def getImagesURLbyId(id: int) -> List[str]:
     url = f"https://www.serebii.net/card/dex/{id:03}.shtml"
 
     response = requests.get(url)
-    soup = BeautifulSoup(response.text)
+    soup = BeautifulSoup(response.text, features="lxml")
     imgs = soup.find_all("img", {"src": re.compile("/card/th/.*.jpg")})
     links = ["https://www.serebii.net" + img.get('src') for img in imgs]
 

@@ -47,8 +47,9 @@ def createDirIfNotExist(path: Path):
 
 def downloadImgs(urls: List[str]) -> List[bytes]:
     session = _resilientSession()
-    imgs_reqs = [session.get(url) for url in urls]
-    for img_req in imgs_reqs:
+    print(f"> Baixando {len(urls)} imagens...")
+    for url in urls:
+        img_req = session.get(url)
         if img_req is None:
             continue
 
