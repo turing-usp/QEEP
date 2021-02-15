@@ -22,7 +22,7 @@ def getAllImagesURLbyId(id: int) -> List[str]:
     acc += gameinfo.getImagesURLbyId(id)
     acc += serebii.getImagesURLbyId(id)
     acc += pokemondb.getImagesURLbyId(id)
-    acc += bulbapedia.getImagesURLbyId(id)
+    # acc += bulbapedia.getImagesURLbyId(id)
     return acc
 
 
@@ -40,8 +40,6 @@ def getAllImagesAndSaveByIds(ids: List[int], base_path: Path) -> List[Path]:
     f = partial(getAllImagesAndSaveById, base_path=base_path)
     with Pool(16) as p:
         p.map(f, ids)
-    for id in ids:
-        getAllImagesAndSaveById(id, base_path)
 
 
 def _main():
