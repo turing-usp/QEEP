@@ -3,6 +3,8 @@
 from typing import List
 from pathlib import Path
 import pokebase as pb
+from functools import partial
+from multiprocessing import Pool
 
 import bulbapedia
 import gameinfo
@@ -35,6 +37,9 @@ def getAllImagesAndSaveById(id: int, base_path: Path) -> List[Path]:
 
 
 def getAllImagesAndSaveByIds(ids: List[int], base_path: Path) -> List[Path]:
+    f = partial(getAllImagesAndSaveById, base_path=base_path)
+    with Pool(16) as p:
+        p.map(f, ids)
     for id in ids:
         getAllImagesAndSaveById(id, base_path)
 
