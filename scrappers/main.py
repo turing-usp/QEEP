@@ -14,7 +14,7 @@ import acess
 
 
 def getAllImagesURLbyId(id: int) -> List[str]:
-    print(f"Pushando urls de #{id}")
+    print(f"> Pushando #{id}")
     acc = []
     acc += pokemon.getImagesURLbyId(id)
     acc += gameinfo.getImagesURLbyId(id)
@@ -39,7 +39,7 @@ def getAllImagesAndSaveByIds(ids: List[int], base_path: Path) -> List[Path]:
         getAllImagesAndSaveById(id, base_path)
 
 
-if __name__ == "__main__":
+def _main():
     import argparse
 
     parser = argparse.ArgumentParser(
@@ -54,3 +54,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
     path = Path(args.path)
     getAllImagesAndSaveByIds(range(args.begin, args.end+1), path)
+
+
+if __name__ == "__main__":
+    _main()

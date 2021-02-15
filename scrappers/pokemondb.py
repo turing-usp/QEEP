@@ -10,6 +10,8 @@ import pokebase as pb
 
 
 def getImagesURLbyId(id: int) -> List[str]:
+    print(f"> Pushando #{id} de pokemondb.net")
+
     pokemon = pb.pokemon(id)
     url = f"https://pokemondb.net/sprites/{pokemon.name}"
 

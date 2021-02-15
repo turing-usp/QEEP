@@ -9,6 +9,8 @@ from bs4 import BeautifulSoup
 
 
 def getImagesURLbyId(id: int) -> List[str]:
+    print(f"> Pushando #{id} de serebii.net")
+
     url = f"https://www.serebii.net/card/dex/{id:03}.shtml"
 
     response = requests.get(url)

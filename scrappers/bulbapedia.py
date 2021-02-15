@@ -19,6 +19,8 @@ def _imgName2url(imgName: str):
 
 
 def getImagesURLbyId(id: int) -> List[str]:
+    print(f"> Pushando #{id} de bulbagarden.com")
+
     pokemon = pb.pokemon(id)
 
     url = "https://archives.bulbagarden.net/w/api.php"

@@ -6,6 +6,7 @@ import filetype
 from hashlib import md5
 from pathlib import Path
 import os
+from functools import cache
 
 
 def _isImage(file) -> bool:
@@ -27,7 +28,8 @@ def _fileExtension(file) -> str:
     return "." + kind.extension
 
 
-def _defineResilientSession() -> requests.Session:
+@cache
+def _resilientSession() -> requests.Session:
     # previne timeouts
     session = requests.Session()
     retry = Retry(connect=5, backoff_factor=0.5)
@@ -37,19 +39,15 @@ def _defineResilientSession() -> requests.Session:
     return session
 
 
-def _createHttpClient():
-    session = _defineResilientSession()
-    return session.get
-
-
 def createDirIfNotExist(path: Path):
     if not path.exists():
+        print("> Create dir:", path)
         os.makedirs(path)
 
 
 def downloadImgs(urls: List[str]) -> List[bytes]:
-    httpClientget = _createHttpClient()
-    imgs_reqs = [httpClientget(u) for u in urls]
+    session = _resilientSession()
+    imgs_reqs = [session.get(url) for url in urls]
     for img_req in imgs_reqs:
         if img_req is None:
             continue
@@ -64,7 +62,7 @@ def downloadImgs(urls: List[str]) -> List[bytes]:
         yield img
 
 
-def writeImage(dir_path: Path, img: bytes):
+def writeImage(dir_path: Path, img: bytes) -> str:
     """
     Salva a imagem a partir de um diretorio,
     gerando seu nome a partir do hash de seu conteudo
@@ -77,9 +75,10 @@ def writeImage(dir_path: Path, img: bytes):
     filepath = dir_path / filename
 
     if filepath.exists():
-        print(filepath, "já existe")
+        print(">", filepath, "já existe")
 
     with open(filepath, mode="wb") as f:
+        print("> Salvando", filepath)
         f.write(img)
 
     return filepath

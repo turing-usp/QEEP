@@ -1,3 +1,4 @@
 requests
+grequests
 pokebase
 bs4
