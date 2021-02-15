@@ -35,8 +35,18 @@ def getAllImagesURLbyId(id: int) -> List[str]:
 def getAllImagesAndSaveById(id: int, base_path: Path) -> List[Path]:
     pokemon = pb.pokemon(id)
 
-    imgsURL = getAllImagesURLbyId(id)
-    imgs = acess.downloadImgs(imgsURL)
+    try:
+        imgsURL = getAllImagesURLbyId(id)
+    except:
+        print("X Fail to get urls from ", id)
+        return
+
+    try:
+        imgs = acess.downloadImgs(imgsURL)
+    except:
+        print("X Fail to download images from ", id)
+        return
+
     path = base_path / pokemon.name
     acess.createDirIfNotExist(path)
     acess.writeImages(path, imgs)

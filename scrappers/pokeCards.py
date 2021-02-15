@@ -23,13 +23,17 @@ def getImagesURLbyId(id: int) -> List[str]:
     while True:
         page += 1
         response = requests.get(url(page))
+
+        if response.status_code != 200:
+            break
+
         soup = BeautifulSoup(response.text, features="lxml")
         imgs = soup.find_all("img", {"src": re.compile(
             "https://assets.pokemon.com/assets/cms2/img/cards/web/")})
         local_links = [img.get('src') for img in imgs]
 
         # A ultima pagina é repetida quando vc acessa uma pagina que não existe
-        if local_links[0] in links and local_links[-1] in links:
+        if len(local_links) == 0 or local_links[-1] in links:
             break
 
         links += local_links
