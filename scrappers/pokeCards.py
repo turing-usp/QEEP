@@ -12,6 +12,23 @@ filterCards = "basic-pokemon=on&stage-1-pokemon=on&stage-2-pokemon=on&level-up-p
 
 
 def getImagesURLbyId(id: int) -> List[str]:
+    """
+    Descrição
+    --------
+    Descobre todas as imagens de um pokemon em https://www.pokemon.com/us/pokemon-tcg/pokemon-cards/
+
+    Entradas
+    --------
+    id: int
+    Numero da pokedex do pokemon
+
+    Saídas
+    ------
+    urls: List<str>
+    Lista de urls encontradas
+
+    """
+
     print(f"> Pushando #{id} de pokemon.com/us/pokemon-tcg/pokemon-cards")
     pokemon = pb.pokemon(id)
 

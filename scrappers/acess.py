@@ -39,13 +39,45 @@ def _resilientSession() -> requests.Session:
     return session
 
 
-def createDirIfNotExist(path: Path):
+def createDirIfNotExist(path: Path) -> None:
+    """
+    Descrição
+    --------
+    Cria um diretorio se ele não existe
+
+    Entradas
+    --------
+    path: Path
+    Path do diretorio que será avaliado
+
+    Saídas
+    ------
+    None
+
+    """
     if not path.exists():
         print("> Create dir:", path)
         os.makedirs(path)
 
 
 def downloadImgs(urls: List[str]) -> List[bytes]:
+    """
+    Descrição
+    --------
+    Baixa uma lista de imagens
+
+    Entradas
+    --------
+    urls: List<str>
+    Lista de urls
+
+    Saídas
+    ------
+    images: List<bytes>
+    Lista de imagens
+
+    """
+
     session = _resilientSession()
     print(f"> Baixando {len(urls)} imagens...")
     for url in urls:
@@ -63,10 +95,27 @@ def downloadImgs(urls: List[str]) -> List[bytes]:
         yield img
 
 
-def writeImage(dir_path: Path, img: bytes) -> str:
+def writeImage(dir_path: Path, img: bytes) -> Path:
     """
+    Descrição
+    --------
     Salva a imagem a partir de um diretorio,
     gerando seu nome a partir do hash de seu conteudo
+    evitando assim salvar duas imagens iguais
+
+    Entradas
+    --------
+    dir_path: Path
+    Diretorio em que a imagem será salva
+
+    img: bytes
+    Imagem que será salva
+
+    Saídas
+    ------
+    filepath: Path
+    local onde a imagem foi salva
+
     """
     assert(dir_path.exists())
     assert(dir_path.is_dir())
@@ -86,4 +135,25 @@ def writeImage(dir_path: Path, img: bytes) -> str:
 
 
 def writeImages(base_path: Path, imgs: List[bytes]):
+    """
+    Descrição
+    --------
+    Salva uma lista de imagem a partir de um diretorio,
+    gerando seus nomes a partir do hash de seu conteudo
+    evitando assim salvar duas imagens iguais
+
+    Entradas
+    --------
+    dir_path: Path
+    Diretorio em que a imagem será salva
+
+    img: List<bytes>
+    Imagens que serão salvas
+
+    Saídas
+    ------
+    filepaths
+    Lista de onde as iamgens foram salvas
+
+    """
     return [writeImage(base_path, img) for img in imgs]

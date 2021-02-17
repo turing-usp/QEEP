@@ -16,10 +16,27 @@ import serebii
 
 import acess
 
-_NUMBER_POOLS = 16
+_NUMBER_POOLS = 6
 
 
 def getAllImagesURLbyId(id: int) -> List[str]:
+    """
+    Descrição
+    --------
+    Descobre todas as imagens de um pokemon nos scrappers criados
+
+    Entradas
+    --------
+    id: int
+    Numero da pokedex do pokemon
+
+    Saídas
+    ------
+    urls: List<str>
+    Lista de urls encontradas
+
+    """
+
     print(f"> Pushando #{id}")
     acc = []
     acc += pokemon.getImagesURLbyId(id)
@@ -27,32 +44,62 @@ def getAllImagesURLbyId(id: int) -> List[str]:
     acc += serebii.getImagesURLbyId(id)
     acc += pokeCards.getImagesURLbyId(id)
     acc += pokemondb.getImagesURLbyId(id)
-    # acc += zerochan.getImagesURLbyId(id)
-    # acc += bulbapedia.getImagesURLbyId(id)
+    # acc += zerochan.getImagesURLbyId(id) # gera alguns lixos
+    # acc += bulbapedia.getImagesURLbyId(id) # gera varios lixos
     return acc
 
 
 def getAllImagesAndSaveById(id: int, base_path: Path) -> List[Path]:
+    """
+    Descrição
+    --------
+    Descobre todas as imagens de um pokemon nos scrappers criados e salva elas
+
+    Entradas
+    --------
+    id: int
+    Numero da pokedex do pokemon
+
+    base_path: Path
+    Diretorio em que será criado uma pasta com o nome do pokemon e salvara as imagens
+    (Cria se o diretorio não existir)
+
+    Saídas
+    ------
+    urls: List<str>
+    Lista de urls encontradas
+
+    """
     pokemon = pb.pokemon(id)
-
-    try:
-        imgsURL = getAllImagesURLbyId(id)
-    except:
-        print("X Fail to get urls from ", id)
-        return
-
-    try:
-        imgs = acess.downloadImgs(imgsURL)
-    except:
-        print("X Fail to download images from ", id)
-        return
-
+    imgsURL = getAllImagesURLbyId(id)
+    imgs = acess.downloadImgs(imgsURL)
     path = base_path / pokemon.name
     acess.createDirIfNotExist(path)
     acess.writeImages(path, imgs)
 
 
 def getAllImagesAndSaveByIds(ids: List[int], base_path: Path) -> List[Path]:
+    """
+    Descrição
+    --------
+    Descobre todas as imagens de uma faixa pokemon nos scrappers criados e salva elas
+    de maneira paralela a cada pokemon
+
+    Entradas
+    --------
+    ids: List<int>
+    Lista de Numero da pokedex do pokemon
+
+    base_path: Path
+    Diretorio em que será criado uma pasta com o nome do pokemon e salvara as imagens
+    (Cria se o diretorio não existir)
+
+    Saídas
+    ------
+    urls: List<str>
+    Lista de urls encontradas
+
+    """
     f = partial(getAllImagesAndSaveById, base_path=base_path)
     with Pool(_NUMBER_POOLS) as p:
         p.map(f, ids)

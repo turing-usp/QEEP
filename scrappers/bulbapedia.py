@@ -9,6 +9,23 @@ from hashlib import md5
 
 
 def _imgName2url(imgName: str):
+    """
+    Descrição
+    --------
+    Gera a url para baixar a partir do nome da imagem conforme descrito na documentação da mediawiki
+
+    Entradas
+    --------
+    imgName: str
+    nome da imagem
+
+    Saídas
+    ------
+    url: str
+    URL da imagem para ser baixada
+
+    """
+
     filename = imgName.strip("File:").replace(" ", "_").encode("utf-8")
 
     # a estrutura do diretório da imagem é composto usando o hash md5 do nome do arquivo.
@@ -19,6 +36,22 @@ def _imgName2url(imgName: str):
 
 
 def getImagesURLbyId(id: int) -> List[str]:
+    """
+    Descrição
+    --------
+    Descobre todas as imagens de um pokemon em https://bulbapedia.bulbagarden.net/wiki/Bulbapedia
+
+    Entradas
+    --------
+    id: int
+    Numero da pokedex do pokemon
+
+    Saídas
+    ------
+    urls: List<str>
+    Lista de urls encontradas
+
+    """
     print(f"> Pushando #{id} de bulbagarden.com")
 
     pokemon = pb.pokemon(id)

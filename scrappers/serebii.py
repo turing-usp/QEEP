@@ -9,6 +9,22 @@ from bs4 import BeautifulSoup
 
 
 def getImagesURLbyId(id: int) -> List[str]:
+    """
+    Descrição
+    --------
+    Descobre todas as imagens de um pokemon em https://serebii.net
+
+    Entradas
+    --------
+    id: int
+    Numero da pokedex do pokemon
+
+    Saídas
+    ------
+    urls: List<str>
+    Lista de urls encontradas
+
+    """
     print(f"> Pushando #{id} de serebii.net")
 
     url = f"https://www.serebii.net/card/dex/{id:03}.shtml"

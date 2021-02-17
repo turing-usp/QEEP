@@ -10,6 +10,23 @@ import pokebase as pb
 
 
 def getImagesURLbyId(id: int) -> List[str]:
+    """
+    Descrição
+    --------
+    Descobre todas as imagens de um pokemon em https://pokemondb.net
+
+    Entradas
+    --------
+    id: int
+    Numero da pokedex do pokemon
+
+    Saídas
+    ------
+    urls: List<str>
+    Lista de urls encontradas
+
+    """
+
     print(f"> Pushando #{id} de pokemondb.net")
 
     pokemon = pb.pokemon(id)
