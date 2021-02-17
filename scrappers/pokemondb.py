@@ -1,56 +1,51 @@
+"""
+Site base: https://pokemondb.net
+"""
+
+from typing import List
 import requests
-from bs4 import BeautifulSoup
-import os
-from util import getImg
 import re
-from uuid import uuid4
+from bs4 import BeautifulSoup
+import pokebase as pb
 
-ENDPOINT = "https://www.pokemondb.net"
 
-def main():
-    for id, url in getPokemons().items():
-        folder = f'dataset/{id:03}'
-        scrapper_link(folder, url, id)
+def getImagesURLbyId(id: int) -> List[str]:
+    """
+    Descrição
+    --------
+    Descobre todas as imagens de um pokemon em https://pokemondb.net
 
-def getPokemons():
-    url = f"{ENDPOINT}/pokedex/stats/combo"
+    Entradas
+    --------
+    id: int
+    Numero da pokedex do pokemon
+
+    Saídas
+    ------
+    urls: List<str>
+    Lista de urls encontradas
+
+    """
+
+    print(f"> Pushando #{id} de pokemondb.net")
+
+    pokemon = pb.pokemon(id)
+    url = f"https://pokemondb.net/sprites/{pokemon.name}"
+
     response = requests.get(url)
-    soup = BeautifulSoup(response.text)
+    soup = BeautifulSoup(response.text, features="lxml")
 
-    hrefs = soup.find("table").find_all("a", {"href": re.compile("/pokedex/")})
+    pattern = r"https://img.pokemondb.net/sprites/.*"
+    imgs = soup.find_all("img", {"src": re.compile(pattern)})
+    lazy_imgs = soup.find_all("span", {"data-src": re.compile(pattern)})
 
-    links = {}
-    count = 1
-    for href in hrefs:
-        link = ENDPOINT + href.get('href')
-        if count >= 151:
-            break
-        if link not in links.values():
-            links[count] = link
-            count+=1
+    links = []
+    links += [img.get('src') for img in imgs]
+    links += [img.get('data-src') for img in lazy_imgs]
 
     return links
 
-def scrapper_link(folder, url, id):
-    try:
-        os.mkdir(folder)
-    except FileExistsError:
-        pass
-
-    response = requests.get(url)
-    soup = BeautifulSoup(response.text)
-
-    pattern = r"https://img.pokemondb.net/sprites/[\w-]*/normal/[\w \.]*"
-    imgs = soup.find_all("img", {"src": re.compile(pattern)})
-
-    links = [img.get('src') for img in imgs]
-
-    for link in links:
-        extension = link.split(".")[-1]
-        filename = folder + f"/{uuid4()}.{extension}"
-        print(filename)
-        getImg(link, filename)
 
 if __name__ == "__main__":
-   main() 
-
+    for id in range(1, 3):
+        print(getImagesURLbyId(id))
