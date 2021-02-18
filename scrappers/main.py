@@ -2,7 +2,6 @@
 
 from typing import List
 from pathlib import Path
-import pokebase as pb
 from functools import partial
 from multiprocessing import Pool
 
@@ -15,6 +14,7 @@ import serebii
 # import zerochan
 
 import acess
+from pokedex import pokedex
 
 _NUMBER_POOLS = 6
 
@@ -70,7 +70,7 @@ def getAllImagesAndSaveById(id: int, base_path: Path) -> List[Path]:
     Lista de urls encontradas
 
     """
-    pokemon = pb.pokemon(id)
+    pokemon = pokedex[id]
     imgsURL = getAllImagesURLbyId(id)
     imgs = acess.downloadImgs(imgsURL)
     path = base_path / pokemon.name

@@ -4,7 +4,7 @@ Site base: https://www.zerochan.net/pikachu?p=2
 
 from typing import List
 import requests
-import pokebase as pb
+from pokedex import pokedex
 from bs4 import BeautifulSoup
 
 
@@ -28,7 +28,7 @@ def getImagesURLbyId(id: int) -> List[str]:
 
     print(f"> Pushando #{id} de zerochan.com")
 
-    pokemon = pb.pokemon(id)
+    pokemon = pokedex[id]
 
     url = f"https://www.zerochan.net/{pokemon.name}"
 
