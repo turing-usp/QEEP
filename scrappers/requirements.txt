@@ -1,2 +1,4 @@
 requests
-bs4
+beautifulsoup4
+filetype
+lxml
