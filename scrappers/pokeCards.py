@@ -6,7 +6,7 @@ from typing import List
 import requests
 import re
 from bs4 import BeautifulSoup
-import pokebase as pb
+from pokedex import pokedex
 
 filterCards = "basic-pokemon=on&stage-1-pokemon=on&stage-2-pokemon=on&level-up-pokemon=on&ex-pokemon=on&mega-ex=on&special-pokemon=on&pokemon-legend=on&restored-pokemon=on&break=on&pokemon-gx=on&pokemon-v=on&pokemon-vmax=on"
 
@@ -30,7 +30,7 @@ def getImagesURLbyId(id: int) -> List[str]:
     """
 
     print(f"> Pushando #{id} de pokemon.com/us/pokemon-tcg/pokemon-cards")
-    pokemon = pb.pokemon(id)
+    pokemon = pokedex[id]
 
     def url(page=1):
         return f"https://www.pokemon.com/us/pokemon-tcg/pokemon-cards/{page}?cardName={pokemon.name}&{filterCards}"

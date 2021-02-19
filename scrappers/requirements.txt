@@ -1,4 +1,3 @@
 requests
-grequests
-pokebase
-bs4
+beautifulsoup4
+filetype

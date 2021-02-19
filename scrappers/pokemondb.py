@@ -6,7 +6,7 @@ from typing import List
 import requests
 import re
 from bs4 import BeautifulSoup
-import pokebase as pb
+from pokedex import pokedex
 
 
 def getImagesURLbyId(id: int) -> List[str]:
@@ -29,7 +29,7 @@ def getImagesURLbyId(id: int) -> List[str]:
 
     print(f"> Pushando #{id} de pokemondb.net")
 
-    pokemon = pb.pokemon(id)
+    pokemon = pokedex[id]
     url = f"https://pokemondb.net/sprites/{pokemon.name}"
 
     response = requests.get(url)

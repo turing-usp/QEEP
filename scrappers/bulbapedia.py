@@ -4,7 +4,7 @@ Site base: https://bulbapedia.bulbagarden.net/wiki/Bulbapedia
 
 from typing import List
 import requests
-import pokebase as pb
+from pokedex import pokedex
 from hashlib import md5
 
 
@@ -54,7 +54,7 @@ def getImagesURLbyId(id: int) -> List[str]:
     """
     print(f"> Pushando #{id} de bulbagarden.com")
 
-    pokemon = pb.pokemon(id)
+    pokemon = pokedex[id]
 
     url = "https://archives.bulbagarden.net/w/api.php"
     params = {
