@@ -13,7 +13,7 @@ default_transform = transforms.Compose([
 ])
 
 
-def loadDataset(path: Path, tranform: torch.nn.Module):
+def loadDataset(path: str = "../data", tranform: torch.nn.Module = None):
     """
     Descrição
     --------
@@ -21,7 +21,7 @@ def loadDataset(path: Path, tranform: torch.nn.Module):
 
     Entradas
     --------
-    path: Path
+    path: str
     Diretorio outro diretorio dentro, cada um uma classe
 
     tranform: torch Tranform
@@ -44,7 +44,7 @@ def loadDataset(path: Path, tranform: torch.nn.Module):
                                 transform=tranform)
 
 
-def loadSplitedDataset(tresh_hold: float, path: Path, transform: torch.nn.Module):
+def loadSplitedDataset(tresh_hold: float = 0.8, path: str = "../data", transform: torch.nn.Module = None):
     """
     Descrição
     --------
@@ -55,7 +55,7 @@ def loadSplitedDataset(tresh_hold: float, path: Path, transform: torch.nn.Module
     tresh_hold: float
     Porcentagem de treino em relação ao dataset original
 
-    path: Path
+    path: str
     Diretorio outro diretorio dentro, cada um uma classe
 
     tranform: torch Tranform
@@ -68,15 +68,18 @@ def loadSplitedDataset(tresh_hold: float, path: Path, transform: torch.nn.Module
 
     torch Dataset
     Dataset de validação
+
+    torch Dataset
+    Dataset completo
     """
 
     dataset = loadDataset(path, transform)
     split_dataset = torch.utils.data.random_split(
         dataset, [int(len(dataset) * tresh_hold), int(len(dataset) * (1-tresh_hold))])
-    return split_dataset[0], split_dataset[1]
+    return split_dataset[0], split_dataset[1], dataset
 
 
-def loadSplitedLoader(batch_size: int, num_workers: int, tresh_hold: float, path: Path, transform: torch.nn.Module):
+def loadSplitedLoader(batch_size: int = 4, num_workers: int = 4, tresh_hold: float = 0.8, path: str = "../data", transform: torch.nn.Module = None):
     """
     Descrição
     --------
@@ -88,12 +91,12 @@ def loadSplitedLoader(batch_size: int, num_workers: int, tresh_hold: float, path
     Tamanho de cada batch
 
     num_workers: int
-    Quantidade de workres
+    Quantidade de subprocessos usados
 
     tresh_hold: float
     Porcentagem de treino em relação ao dataset original
 
-    path: Path
+    path: str
     Diretorio outro diretorio dentro, cada um uma classe
 
     tranform: torch Tranform
@@ -106,12 +109,15 @@ def loadSplitedLoader(batch_size: int, num_workers: int, tresh_hold: float, path
 
     torch Dataset
     Dataset de validação
+
+    torch Dataset
+    Dataset completo
     """
 
-    train_dataset, val_dataset, datasets = loadSplitedDataset(
+    train_dataset, val_dataset, dataset = loadSplitedDataset(
         tresh_hold, path, transform)
     train_loader = torch.utils.data.DataLoader(
         train_dataset, batch_size=batch_size, shuffle=True, num_workers=num_workers)
     val_loader = torch.utils.data.DataLoader(
         val_dataset, batch_size=batch_size, shuffle=True, num_workers=num_workers)
-    return train_loader, val_loader, datasets
+    return train_loader, val_loader, dataset
