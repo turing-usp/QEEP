@@ -13,7 +13,7 @@ import pokeCards
 import serebii
 # import zerochan
 
-import acess
+import repository
 from pokedex import pokedex
 
 _NUMBER_POOLS = 6
@@ -72,10 +72,10 @@ def getAllImagesAndSaveById(id: int, base_path: Path) -> List[Path]:
     """
     pokemon = pokedex[id]
     imgsURL = getAllImagesURLbyId(id)
-    imgs = acess.downloadImgs(imgsURL)
+    imgs = repository.downloadImgs(imgsURL)
     path = base_path / pokemon.name
-    acess.createDirIfNotExist(path)
-    acess.writeImages(path, imgs)
+    repository.createDirIfNotExist(path)
+    repository.writeImages(path, imgs)
 
 
 def getAllImagesAndSaveByIds(ids: List[int], base_path: Path) -> List[Path]:
