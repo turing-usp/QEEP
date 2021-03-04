@@ -7,6 +7,7 @@ import requests
 import re
 from bs4 import BeautifulSoup
 from pokedex import pokedex
+from repository import downloadImgs
 
 filterCards = "basic-pokemon=on&stage-1-pokemon=on&stage-2-pokemon=on&level-up-pokemon=on&ex-pokemon=on&mega-ex=on&special-pokemon=on&pokemon-legend=on&restored-pokemon=on&break=on&pokemon-gx=on&pokemon-v=on&pokemon-vmax=on"
 
@@ -56,6 +57,28 @@ def getImagesURLbyId(id: int) -> List[str]:
         links += local_links
 
     return links
+
+
+def getImagesbyId(id: int) -> List[bytes]:
+    """
+    Descrição
+    --------
+    Descobre todas as imagens de um pokemon em https://www.pokemon.com/us/pokemon-tcg/pokemon-cards/ e baixa
+
+    Entradas
+    --------
+    id: int
+    Numero da pokedex do pokemon
+
+    Saídas
+    ------
+    urls: List<str>
+    Lista de urls encontradas
+
+    """
+    urls = getImagesURLbyId(id)
+    imgs = downloadImgs(urls)
+    return imgs
 
 
 if __name__ == "__main__":

@@ -49,6 +49,36 @@ def getAllImagesURLbyId(id: int) -> List[str]:
     return acc
 
 
+def getAllImagesbyId(id: int) -> List[bytes]:
+    """
+    Descrição
+    --------
+    Descobre todas as imagens de um pokemon nos scrappers criados
+
+    Entradas
+    --------
+    id: int
+    Numero da pokedex do pokemon
+
+    Saídas
+    ------
+    urls: List<str>
+    Lista de urls encontradas
+
+    """
+
+    print(f"> Pushando #{id}")
+    acc = []
+    acc += pokemon.getImagesbyId(id)
+    acc += gameinfo.getImagesbyId(id)
+    acc += serebii.getImagesbyId(id)
+    acc += pokeCards.getImagesbyId(id)
+    acc += pokemondb.getImagesbyId(id)
+    # acc += zerochan.getImagesbyId(id) # gera alguns lixos
+    # acc += bulbapedia.getImagesbyId(id) # gera varios lixos
+    return acc
+
+
 def getAllImagesAndSaveById(id: int, base_path: Path) -> List[Path]:
     """
     Descrição
@@ -71,8 +101,7 @@ def getAllImagesAndSaveById(id: int, base_path: Path) -> List[Path]:
 
     """
     pokemon = pokedex[id]
-    imgsURL = getAllImagesURLbyId(id)
-    imgs = repository.downloadImgs(imgsURL)
+    imgs = getAllImagesbyId(id)
     path = base_path / pokemon.name
     repository.createDirIfNotExist(path)
     repository.writeImages(path, imgs)
