@@ -8,6 +8,8 @@ import re
 from bs4 import BeautifulSoup
 from pokedex import pokedex
 from repository import downloadImgs
+from PIL import Image
+import io
 
 filterCards = "basic-pokemon=on&stage-1-pokemon=on&stage-2-pokemon=on&level-up-pokemon=on&ex-pokemon=on&mega-ex=on&special-pokemon=on&pokemon-legend=on&restored-pokemon=on&break=on&pokemon-gx=on&pokemon-v=on&pokemon-vmax=on"
 
@@ -59,6 +61,32 @@ def getImagesURLbyId(id: int) -> List[str]:
     return links
 
 
+def crop(imgBytes: bytes) -> bytes:
+    """
+    Descrição
+    --------
+    Corta apenas o quadrado do pokemon
+
+    Entradas
+    --------
+    img: bytes
+    Imagem em bytes
+
+    Saídas
+    ------
+    img: List<bytes>
+    Image cortada
+
+    """
+    img = Image.open(io.BytesIO(imgBytes))
+    img = img.crop((20, 35, 225, 175))
+
+    # https://stackoverflow.com/questions/33101935/convert-pil-image-to-byte-array#33117447
+    imgByteOut = io.BytesIO()
+    img.save(imgByteOut, format='PNG')
+    return imgByteOut.getvalue()
+
+
 def getImagesbyId(id: int) -> List[bytes]:
     """
     Descrição
@@ -78,7 +106,8 @@ def getImagesbyId(id: int) -> List[bytes]:
     """
     urls = getImagesURLbyId(id)
     imgs = downloadImgs(urls)
-    return imgs
+    croppedImage = [crop(img) for img in imgs]
+    return croppedImage
 
 
 if __name__ == "__main__":
