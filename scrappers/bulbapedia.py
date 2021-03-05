@@ -6,6 +6,7 @@ from typing import List
 import requests
 from pokedex import pokedex
 from hashlib import md5
+from repository import downloadImgs
 
 
 def _imgName2url(imgName: str):
@@ -75,6 +76,28 @@ def getImagesURLbyId(id: int) -> List[str]:
         members = resp["query"]["categorymembers"]
         links += [_imgName2url(image["title"]) for image in members]
     return links
+
+
+def getImagesbyId(id: int) -> List[bytes]:
+    """
+    Descrição
+    --------
+    Descobre todas as imagens de um pokemon em https://bulbapedia.bulbagarden.net/wiki/Bulbapedia e as baixa
+
+    Entradas
+    --------
+    id: int
+    Numero da pokedex do pokemon
+
+    Saídas
+    ------
+    urls: List<str>
+    Lista de urls encontradas
+
+    """
+    urls = getImagesURLbyId(id)
+    imgs = downloadImgs(urls)
+    return imgs
 
 
 if __name__ == "__main__":

@@ -6,6 +6,7 @@ from typing import List
 import requests
 from pokedex import pokedex
 from bs4 import BeautifulSoup
+from repository import downloadImgs
 
 
 def getImagesURLbyId(id: int) -> List[str]:
@@ -50,6 +51,28 @@ def getImagesURLbyId(id: int) -> List[str]:
 
         links += [img.get('src') for img in imgs]
     return links
+
+
+def getImagesbyId(id: int) -> List[bytes]:
+    """
+    Descrição
+    --------
+    Descobre todas as imagens de um pokemon em https://zerochan.net e baixa
+
+    Entradas
+    --------
+    id: int
+    Numero da pokedex do pokemon
+
+    Saídas
+    ------
+    urls: List<str>
+    Lista de urls encontradas
+
+    """
+    urls = getImagesURLbyId(id)
+    imgs = downloadImgs(urls)
+    return imgs
 
 
 if __name__ == "__main__":

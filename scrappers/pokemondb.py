@@ -7,6 +7,7 @@ import requests
 import re
 from bs4 import BeautifulSoup
 from pokedex import pokedex
+from repository import downloadImgs
 
 
 def getImagesURLbyId(id: int) -> List[str]:
@@ -44,6 +45,28 @@ def getImagesURLbyId(id: int) -> List[str]:
     links += [img.get('data-src') for img in lazy_imgs]
 
     return links
+
+
+def getImagesbyId(id: int) -> List[bytes]:
+    """
+    Descrição
+    --------
+    Descobre todas as imagens de um pokemon em https://pokemondb.net e baixa
+
+    Entradas
+    --------
+    id: int
+    Numero da pokedex do pokemon
+
+    Saídas
+    ------
+    urls: List<str>
+    Lista de urls encontradas
+
+    """
+    urls = getImagesURLbyId(id)
+    imgs = downloadImgs(urls)
+    return imgs
 
 
 if __name__ == "__main__":

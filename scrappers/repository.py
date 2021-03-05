@@ -60,6 +60,40 @@ def createDirIfNotExist(path: Path) -> None:
         os.makedirs(path)
 
 
+def downloadImg(url: str) -> bytes:
+    """
+    Descrição
+    --------
+    Baixa uma imagens
+
+    Entradas
+    --------
+    url: str
+    Url da imagem
+
+    Saídas
+    ------
+    images: List<bytes>
+    Lista de imagens
+
+    """
+    session = _resilientSession()
+
+    img_req = session.get(url)
+
+    if img_req is None:
+        return
+
+    if img_req.status_code != 200:
+        return
+
+    img = img_req.content
+    if not _isImage(img):
+        return
+
+    return img
+
+
 def downloadImgs(urls: List[str]) -> List[bytes]:
     """
     Descrição
@@ -78,18 +112,11 @@ def downloadImgs(urls: List[str]) -> List[bytes]:
 
     """
 
-    session = _resilientSession()
     print(f"> Baixando {len(urls)} imagens...")
     for url in urls:
-        img_req = session.get(url)
-        if img_req is None:
-            continue
+        img = downloadImg(url)
 
-        if img_req.status_code != 200:
-            continue
-
-        img = img_req.content
-        if not _isImage(img):
+        if img is None:
             continue
 
         yield img
