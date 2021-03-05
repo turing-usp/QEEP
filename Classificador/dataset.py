@@ -1,60 +1,123 @@
-from itertools import chain
 import torch
-import numpy as np
-import matplotlib.pyplot as plt
 from torchvision import transforms, datasets
-import torchvision
+from pathlib import Path
 
-DATASET_PATH = '../data'
+torch.manual_seed(4)
 
-data_transform = transforms.Compose([
-    transforms.Resize((124, 124)),
+default_transform = transforms.Compose([
+    transforms.Resize((256, 256)),
     transforms.RandomHorizontalFlip(),
+    transforms.RandomVerticalFlip(),
     transforms.ToTensor(),
+    transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
 ])
 
-_pokeDataset_full = datasets.ImageFolder(root=DATASET_PATH,
-                                         transform=data_transform)
 
-datasetLen = {
-    'full': len(_pokeDataset_full)
-}
-datasetLen['train'] = int(0.7*datasetLen['full'])
-datasetLen['val'] = datasetLen['full'] - datasetLen['train']
+def loadDataset(path: str = "../data", tranform: torch.nn.Module = None):
+    """
+    Descrição
+    --------
+    Carrega o Dataset
 
-[_pokeDataset_train, _pokeDataset_val] = torch.utils.data.random_split(
-    _pokeDataset_full, [datasetLen['train'], datasetLen['val']])
+    Entradas
+    --------
+    path: str
+    Diretorio outro diretorio dentro, cada um uma classe
 
-pokeDataset = {
-    'full': _pokeDataset_full,
-    'train': _pokeDataset_train,
-    'val': _pokeDataset_val
-}
+    tranform: torch Tranform
+    Transformaçoes a serem aplicadas no dataset
+    Se não for defenido será usado o default_ttranform
 
-pokeLoader = {
-    'train': torch.utils.data.DataLoader(pokeDataset['train'],
-                                         batch_size=4, shuffle=True,
-                                         num_workers=4),
-    'val': torch.utils.data.DataLoader(pokeDataset['val'],
-                                       batch_size=4, shuffle=True,
-                                       num_workers=4)
-}
-pokeLoader['full'] = chain(pokeLoader['train'], pokeLoader['val'])
+    Saídas
+    ------
+    torch Dataset
+    Dataset carregado
 
+    """
+    if not path.exists():
+        raise Exception('Dataset not found')
 
-def imshow(inp, title=None):
-    """Imshow for Tensor."""
-    inp = inp.numpy().transpose((1, 2, 0))
-    inp = np.clip(inp, 0, 1)
-    plt.imshow(inp)
-    if title is not None:
-        plt.title(title)
-    plt.pause(0.001)  # pause a bit so that plots are updated
+    if tranform is None:
+        tranform = default_transform
+
+    return datasets.ImageFolder(root=path,
+                                transform=tranform)
 
 
-if __name__ == "__main__":
-    # Get a batch of training data
-    for inputs, classes in (pokeLoader['full']):
-        out = torchvision.utils.make_grid(inputs)
-        imshow(out, title=[_pokeDataset_full.classes[x] for x in classes])
-        plt.show()
+def loadSplitedDataset(tresh_hold: float = 0.8, path: str = "../data", transform: torch.nn.Module = None):
+    """
+    Descrição
+    --------
+    Carrega o Dataset e separa ele em dois grupos: de treino e validação
+
+    Entradas
+    --------
+    tresh_hold: float
+    Porcentagem de treino em relação ao dataset original
+
+    path: str
+    Diretorio outro diretorio dentro, cada um uma classe
+
+    tranform: torch Tranform
+    Transformaçoes a serem aplicadas no dataset
+
+    Saídas
+    ------
+    torch Dataset
+    Dataset de treino
+
+    torch Dataset
+    Dataset de validação
+
+    torch Dataset
+    Dataset completo
+    """
+
+    dataset = loadDataset(path, transform)
+    split_dataset = torch.utils.data.random_split(
+        dataset, [int(len(dataset) * tresh_hold), int(len(dataset) * (1-tresh_hold))])
+    return split_dataset[0], split_dataset[1], dataset
+
+
+def loadSplitedLoader(batch_size: int = 4, num_workers: int = 4, tresh_hold: float = 0.8, path: str = "../data", transform: torch.nn.Module = None):
+    """
+    Descrição
+    --------
+    Carrega o Dataset e separa ele em dois grupos: de treino e validação e os transforma em bachs
+
+    Entradas
+    --------
+    batch_size: int
+    Tamanho de cada batch
+
+    num_workers: int
+    Quantidade de subprocessos usados
+
+    tresh_hold: float
+    Porcentagem de treino em relação ao dataset original
+
+    path: str
+    Diretorio outro diretorio dentro, cada um uma classe
+
+    tranform: torch Tranform
+    Transformaçoes a serem aplicadas no dataset
+
+    Saídas
+    ------
+    torch Dataset
+    Dataset de treino
+
+    torch Dataset
+    Dataset de validação
+
+    torch Dataset
+    Dataset completo
+    """
+
+    train_dataset, val_dataset, dataset = loadSplitedDataset(
+        tresh_hold, path, transform)
+    train_loader = torch.utils.data.DataLoader(
+        train_dataset, batch_size=batch_size, shuffle=True, num_workers=num_workers)
+    val_loader = torch.utils.data.DataLoader(
+        val_dataset, batch_size=batch_size, shuffle=True, num_workers=num_workers)
+    return train_loader, val_loader, dataset
