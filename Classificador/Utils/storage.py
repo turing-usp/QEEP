@@ -40,7 +40,7 @@ def loadModel(model : str = "mobilenet", file : str = "mobilenet_weights.pkl", d
     """ 
     if drive:
         try:
-            gdown.download(url, name, quiet=False)
+            gdown.download(url, file, quiet=False)
         except Exception as err:
             print(str(err))
             print("Rede pré treinada não pode ser baixada.")
@@ -54,14 +54,13 @@ def loadModel(model : str = "mobilenet", file : str = "mobilenet_weights.pkl", d
        model_ft.fc = nn.Linear(num_feat, 151)
     st = torch.load(file, map_location='cuda:0' if torch.cuda.is_available() else 'cpu')
     model_ft.load_state_dict(st)
-    print(model_ft.eval())
-    return model_ft
+    return model_ft.eval()
 
 import torch
 
 
 def saveModel(name: str, model: torch.nn.Module = None, path: str = "") -> Type[None]:
- """
+    """
     Salva um PyTorch model, no path e nome desejados, com extensão .pkl
     ---------------
     Argumentos:
@@ -70,10 +69,6 @@ def saveModel(name: str, model: torch.nn.Module = None, path: str = "") -> Type[
         - name: string contendo o nome do arquivo salvo
     """
     # Ajustando o path
+
     PATH = os.path.join(path, name + '.pkl')
     torch.save(model.state_dict(), PATH)
-    
-if __name__ == "__main__":
-    model = loadModel(model = "shufflenet", file = "weights.pkl")
-    saveModel(model=model, name = "shuffle")
-    model = loadModel(model = "shufflenet", file = "shuffle.pkl")
