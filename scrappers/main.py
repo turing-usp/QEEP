@@ -13,7 +13,7 @@ import pokeCards
 import serebii
 # import zerochan
 
-import acess
+import repository
 from pokedex import pokedex
 
 _NUMBER_POOLS = 6
@@ -49,6 +49,36 @@ def getAllImagesURLbyId(id: int) -> List[str]:
     return acc
 
 
+def getAllImagesbyId(id: int) -> List[bytes]:
+    """
+    Descrição
+    --------
+    Descobre todas as imagens de um pokemon nos scrappers criados
+
+    Entradas
+    --------
+    id: int
+    Numero da pokedex do pokemon
+
+    Saídas
+    ------
+    urls: List<str>
+    Lista de urls encontradas
+
+    """
+
+    print(f"> Pushando #{id}")
+    acc = []
+    acc += pokemon.getImagesbyId(id)
+    acc += gameinfo.getImagesbyId(id)
+    acc += serebii.getImagesbyId(id)
+    acc += pokeCards.getImagesbyId(id)
+    acc += pokemondb.getImagesbyId(id)
+    # acc += zerochan.getImagesbyId(id) # gera alguns lixos
+    # acc += bulbapedia.getImagesbyId(id) # gera varios lixos
+    return acc
+
+
 def getAllImagesAndSaveById(id: int, base_path: Path) -> List[Path]:
     """
     Descrição
@@ -71,11 +101,10 @@ def getAllImagesAndSaveById(id: int, base_path: Path) -> List[Path]:
 
     """
     pokemon = pokedex[id]
-    imgsURL = getAllImagesURLbyId(id)
-    imgs = acess.downloadImgs(imgsURL)
+    imgs = getAllImagesbyId(id)
     path = base_path / pokemon.name
-    acess.createDirIfNotExist(path)
-    acess.writeImages(path, imgs)
+    repository.createDirIfNotExist(path)
+    repository.writeImages(path, imgs)
 
 
 def getAllImagesAndSaveByIds(ids: List[int], base_path: Path) -> List[Path]:

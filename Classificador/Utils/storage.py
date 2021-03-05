@@ -5,6 +5,7 @@ import torchvision.models as models
 import os
 from typing import Type
 
+
 def loadModel(model : str = "mobilenet", file : str = "mobilenet_weights.pkl", drive : bool = True,
               url : str ="https://drive.google.com/uc?export=download&id=1yC0qK0gVX5sc6GTpBPBupH3TSFssLkqS") -> nn.Module:
     """
@@ -56,8 +57,6 @@ def loadModel(model : str = "mobilenet", file : str = "mobilenet_weights.pkl", d
     model_ft.load_state_dict(st)
     return model_ft.eval()
 
-import torch
-
 
 def saveModel(name: str, model: torch.nn.Module = None, path: str = "") -> Type[None]:
     """
@@ -68,7 +67,9 @@ def saveModel(name: str, model: torch.nn.Module = None, path: str = "") -> Type[
         - path: string contendo o path para salvar o modelo
         - name: string contendo o nome do arquivo salvo
     """
-    # Ajustando o path
-
     PATH = os.path.join(path, name + '.pkl')
     torch.save(model.state_dict(), PATH)
+    
+
+if __name__ == "__main__":
+    model = loadModel(model = "mobilenet", drive=True)
