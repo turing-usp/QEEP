@@ -34,7 +34,7 @@ def loadDataset(path: str = "../data", tranform: torch.nn.Module = None):
     Dataset carregado
 
     """
-    if not path.exists():
+    if not Path(path).exists():
         raise Exception('Dataset not found')
 
     if tranform is None:

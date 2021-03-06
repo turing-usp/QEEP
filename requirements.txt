@@ -1,3 +1,6 @@
+torch
+torchvision
+gdown
 requests
 beautifulsoup4
 filetype
