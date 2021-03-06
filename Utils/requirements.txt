@@ -1,6 +1,0 @@
-# Needed packages
-
-Pillow
-opencv
-numpy
-matplotlib
