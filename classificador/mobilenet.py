@@ -2,8 +2,8 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 from torch.optim import lr_scheduler
-from Utils.storage import saveModel
-from Utils.train import trainModel
+from util.storage import saveModel
+from util.train import trainModel
 from dataset import loadSplitedLoader
 
 
