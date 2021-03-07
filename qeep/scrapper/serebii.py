@@ -6,7 +6,7 @@ from typing import List
 import requests
 import re
 from bs4 import BeautifulSoup
-from repository import downloadImgs
+from ..util.image_repository import downloadImgs
 
 
 def getImagesURLbyId(id: int) -> List[str]:

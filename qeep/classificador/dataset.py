@@ -13,7 +13,7 @@ default_transform = transforms.Compose([
 ])
 
 
-def loadDataset(path: str = "../data", tranform: torch.nn.Module = None):
+def loadDataset(path: str = "./data'", tranform: torch.nn.Module = None):
     """
     Descrição
     --------
@@ -44,7 +44,7 @@ def loadDataset(path: str = "../data", tranform: torch.nn.Module = None):
                                 transform=tranform)
 
 
-def loadSplitedDataset(tresh_hold: float = 0.8, path: str = "../data", transform: torch.nn.Module = None):
+def loadSplitedDataset(tresh_hold: float = 0.8, path: str = "./data'", transform: torch.nn.Module = None):
     """
     Descrição
     --------
@@ -79,7 +79,7 @@ def loadSplitedDataset(tresh_hold: float = 0.8, path: str = "../data", transform
     return split_dataset[0], split_dataset[1], dataset
 
 
-def loadSplitedLoader(batch_size: int = 4, num_workers: int = 4, tresh_hold: float = 0.8, path: str = "../data", transform: torch.nn.Module = None):
+def loadSplitedLoader(batch_size: int = 4, num_workers: int = 4, tresh_hold: float = 0.8, path: str = "./data'", transform: torch.nn.Module = None):
     """
     Descrição
     --------
