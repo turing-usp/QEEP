@@ -2,7 +2,7 @@ import json
 from dataset import loadDataset
 
 
-def saveClasses(classesPath: str = "../classes.json", datasetPath: str = "./data'"):
+def saveClasses(classesPath: str = "../classes.json", datasetPath: str = ".data"):
     """
     Descrição
     --------
