@@ -4,9 +4,9 @@ Site base: https://www.zerochan.net/pikachu?p=2
 
 from typing import List
 import requests
-from pokedex import pokedex
+from ..util.pokedex import pokedex
 from bs4 import BeautifulSoup
-from repository import downloadImgs
+from ..util.image_repository import downloadImgs
 
 
 def getImagesURLbyId(id: int) -> List[str]:

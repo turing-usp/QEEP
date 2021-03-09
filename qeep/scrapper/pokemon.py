@@ -3,7 +3,7 @@ Site base: https://pokemon.com
 """
 
 from typing import List
-from repository import downloadImgs
+from ..util.image_repository import downloadImgs
 
 
 def getImagesURLbyId(id: int) -> List[str]:

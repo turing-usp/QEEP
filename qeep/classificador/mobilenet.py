@@ -2,9 +2,9 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 from torch.optim import lr_scheduler
-from util.storage import saveModel
-from util.train import trainModel
-from dataset import loadSplitedLoader
+from ..util.storage import saveModel
+from ..util.train import trainModel
+from .dataset import loadSplitedLoader
 
 
 def createMobilenet(output_size, input_size, device):

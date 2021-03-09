@@ -6,8 +6,8 @@ from typing import List
 import requests
 import re
 from bs4 import BeautifulSoup
-from pokedex import pokedex
-from repository import downloadImgs
+from ..util.pokedex import pokedex
+from ..util.image_repository import downloadImgs
 from PIL import Image
 import io
 

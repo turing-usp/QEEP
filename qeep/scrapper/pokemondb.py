@@ -1,19 +1,20 @@
 """
-Site base: https://www.serebii.net
+Site base: https://pokemondb.net
 """
 
 from typing import List
 import requests
 import re
 from bs4 import BeautifulSoup
-from repository import downloadImgs
+from ..util.pokedex import pokedex
+from ..util.image_repository import downloadImgs
 
 
 def getImagesURLbyId(id: int) -> List[str]:
     """
     Descrição
     --------
-    Descobre todas as imagens de um pokemon em https://serebii.net
+    Descobre todas as imagens de um pokemon em https://pokemondb.net
 
     Entradas
     --------
@@ -26,24 +27,31 @@ def getImagesURLbyId(id: int) -> List[str]:
     Lista de urls encontradas
 
     """
-    print(f"> Pushando #{id} de serebii.net")
 
-    url = f"https://www.serebii.net/card/dex/{id:03}.shtml"
+    print(f"> Pushando #{id} de pokemondb.net")
+
+    pokemon = pokedex[id]
+    url = f"https://pokemondb.net/sprites/{pokemon.name}"
 
     response = requests.get(url)
     soup = BeautifulSoup(response.text, features="lxml")
-    imgs = soup.find_all("img", {"src": re.compile("/card/th/.*.jpg")})
-    links = ["https://www.serebii.net" + img.get('src') for img in imgs]
 
-    artURL = f"https://www.serebii.net/art/th/{id}.png"
-    return [artURL] + links
+    pattern = r"https://img.pokemondb.net/sprites/.*"
+    imgs = soup.find_all("img", {"src": re.compile(pattern)})
+    lazy_imgs = soup.find_all("span", {"data-src": re.compile(pattern)})
+
+    links = []
+    links += [img.get('src') for img in imgs]
+    links += [img.get('data-src') for img in lazy_imgs]
+
+    return links
 
 
 def getImagesbyId(id: int) -> List[bytes]:
     """
     Descrição
     --------
-    Descobre todas as imagens de um pokemon em https://serebii.net e baixa
+    Descobre todas as imagens de um pokemon em https://pokemondb.net e baixa
 
     Entradas
     --------

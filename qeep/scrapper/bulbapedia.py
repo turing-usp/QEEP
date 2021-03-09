@@ -4,9 +4,9 @@ Site base: https://bulbapedia.bulbagarden.net/wiki/Bulbapedia
 
 from typing import List
 import requests
-from pokedex import pokedex
+from ..util.pokedex import pokedex
 from hashlib import md5
-from repository import downloadImgs
+from ..util.image_repository import downloadImgs
 
 
 def _imgName2url(imgName: str):

@@ -5,7 +5,6 @@ from urllib3.util.retry import Retry
 import filetype
 from hashlib import md5
 from pathlib import Path
-import os
 from functools import cache
 
 
@@ -37,27 +36,6 @@ def _resilientSession() -> requests.Session:
     session.mount('http://', adapter)
     session.mount('https://', adapter)
     return session
-
-
-def createDirIfNotExist(path: Path) -> None:
-    """
-    Descrição
-    --------
-    Cria um diretorio se ele não existe
-
-    Entradas
-    --------
-    path: Path
-    Path do diretorio que será avaliado
-
-    Saídas
-    ------
-    None
-
-    """
-    if not path.exists():
-        print("> Create dir:", path)
-        os.makedirs(path)
 
 
 def downloadImg(url: str) -> bytes:
