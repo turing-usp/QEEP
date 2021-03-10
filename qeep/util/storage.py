@@ -55,8 +55,7 @@ def loadModel(model : str = "mobilenet", file : str = "mobilenet_weights.pkl", d
        model_ft.fc = nn.Linear(num_feat, 151)
     st = torch.load(file, map_location='cuda:0' if torch.cuda.is_available() else 'cpu')
     model_ft.load_state_dict(st)
-    print(model_ft.eval())
-    return model_ft
+    return model_ft.eval()
 
 
 def saveModel(name: str, model: torch.nn.Module = None, path: str = "") -> Type[None]:
