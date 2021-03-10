@@ -67,14 +67,14 @@ class ModelStorage():
         st = torch.load(file, map_location=self.device)
         self.model.load_state_dict(st)
 
-    def saveModel(self, name: str, path: str = "") -> Type[None]:
+    def saveModel(self, filename: str, path: str = "") -> Type[None]:
         """
         Salva um PyTorch model, no path e nome desejados, com extensão .pkl
         ---------------
         Argumentos:
             - model: PyTorch model (torch.nn.Module) 
             - path: string contendo o path para salvar o modelo
-            - name: string contendo o nome do arquivo salvo
+            - filename: string contendo o nome do arquivo salvo
         """
-        p = os.path.join(path, name + '.pkl')
+        p = os.path.join(path, filename)
         torch.save(self.model.state_dict(), p)

@@ -29,8 +29,12 @@ class ModelValidation():
     model: torch.nn.Module
     dataloaders: List[torch.utils.data.DataLoader]
 
-    def __init__(self, name: str = "model"):
-        self.device = 'cuda:0' if torch.cuda.is_available() else 'cpu'
+    def __call__(self, x):
+        self.model(x)
+
+    @property
+    def device(self, name: str = "model"):
+        return 'cuda:0' if torch.cuda.is_available() else 'cpu'
 
     def trainModel(self, criterion=None, optimizer=None, scheduler: optim.lr_scheduler.StepLR = None,
                    epochs: int = 25, learning_rate: float = 0.001):
@@ -51,7 +55,6 @@ class ModelValidation():
             self.model.train()
             running_loss = 0.0
             running_corrects = 0
-
             # Iterate over data.
             for inputs, labels in self.dataloaders[0]:
                 inputs = inputs.to(self.device)
