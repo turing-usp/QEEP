@@ -1,13 +1,11 @@
 # QEEP Turing (Qual é esse Pokémon?)
-<img src="https://i.imgur.com/NAXImVj.jpg" width="800">
-<img src="https://img.shields.io/github/contributors/GrupoTuring/QEEP">
-<img src="https://img.shields.io/github/last-commit/GrupoTuring/QEEP">
-<br/>
+<img src="https://i.imgur.com/NAXImVj.jpg" width="1000">
+<img src="https://img.shields.io/github/contributors/GrupoTuring/QEEP"> <img src="https://img.shields.io/github/last-commit/GrupoTuring/QEEP">
 
 ## O que é o QEEP?
 O QEEP Turing (Qual é esse Pokémon?) é um projeto desenvolvido pelos membros da área de Visão Computacional do grupo Turing para fazer a detecção de pokémons em imagens. O projeto começou com o objetivo de incentivar os membros a estudar e desenvolver, de maneira prática, técnicas de detecção de objetos.
 
-Para isso, membros fizeram um classificador de pokémons utilizando duas redes distintas: [ShuffleNet](https://towardsdatascience.com/review-shufflenet-v1-light-weight-model-image-classification-5b253dfe982f) e [MobileNet](https://towardsdatascience.com/review-mobilenetv1-depthwise-separable-convolution-light-weight-model-a382df364b69). E em seguida criaram um detector utilizando o algoritmo de [Sliding Windows](https://www.pyimagesearch.com/2015/03/23/sliding-windows-for-object-detection-with-python-and-opencv/). 
+Para isso, membros fizeram um classificador de pokémons utilizando duas redes distintas: [ShuffleNet](https://towardsdatascience.com/review-shufflenet-v1-light-weight-model-image-classification-5b253dfe982f) e [MobileNet](https://towardsdatascience.com/review-mobilenetv1-depthwise-separable-convolution-light-weight-model-a382df364b69). Em seguida foi criado um detector utilizando o algoritmo de [Sliding Windows](https://www.pyimagesearch.com/2015/03/23/sliding-windows-for-object-detection-with-python-and-opencv/). 
 
 Para clonar o repositório digitar:
 
@@ -32,8 +30,7 @@ Nesse repositório foi feito um [transfer learning](https://medium.com/turing-ta
 
 
 ### ShuffleNet
-<img src="https://miro.medium.com/max/1112/1*4YsmTx-vhYISZRFu7422lQ.png
-" width="800">
+<img src="https://miro.medium.com/max/1112/1*4YsmTx-vhYISZRFu7422lQ.png" width="800">
 A ShuffleNet é uma rede neural projetada especialmente para dispositivos móveis com poder de computação muito limitado. A arquitetura utiliza duas novas operações, convolução de grupo pontual e troca de canais, para reduzir significativamente o custo de computação, mantendo a precisão.
 
 Assim como na MobileNet, foi feito um [transfer learning](https://medium.com/turing-talks/deep-transfer-learning-a145125b754c) com tal rede utilizando a implementação padrão do PyTorch que pode ser [conferida aqui](https://pytorch.org/hub/pytorch_vision_shufflenet_v2/).
