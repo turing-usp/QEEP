@@ -2,9 +2,10 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 from torch.optim import lr_scheduler
-import ..util.train as train
+from ..util import train
 from ..util.storage import saveModel, loadModel
 from .dataset import loadSplitedLoader
+
 
 class MobileNet():
     def __init__(self):
@@ -12,7 +13,7 @@ class MobileNet():
 
     def loadDataset(self, *args, **kwargs):
         *self.data_loaders, self.dataset = loadSplitedLoader(*args, **kwargs)
-        self.classes_len = len(dataset.classes)
+        self.classes_len = len(self.dataset.classes)
 
     def trainModel(self, batch_size=4, criterion=None, optimizer=None, scheduler=None,
                    epochs=25, learning_rate=0.001):
@@ -43,9 +44,19 @@ class MobileNet():
 
         return instance
 
-
     def loadPretrained(model="mobilenet", file: str = "mobilenet_weights.pkl", drive: bool = True,
-                       url: str ="https://drive.google.com/uc?export=download&id=1yC0qK0gVX5sc6GTpBPBupH3TSFssLkqS")
+                       url: str ="https://drive.google.com/uc?export=download&id=1yC0qK0gVX5sc6GTpBPBupH3TSFssLkqS"):
         instance = MobileNet()
         instance.model = loadModel(model, file, drive, url)
         return instance
+
+    def save(self, name: str, model: torch.nn.Module = None, path: str = ""):
+        """
+        Salva um PyTorch model, no path e nome desejados, com extensão .pkl
+        ---------------
+        Argumentos:
+            - model: PyTorch model (torch.nn.Module)
+            - path: string contendo o path para salvar o modelo
+            - name: string contendo o nome do arquivo salvo
+        """
+        saveModel(name, model, path)
