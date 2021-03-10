@@ -1,44 +1,65 @@
-<img src="https://i.ibb.co/DtHQ3FG/802x265-Logo-GT.png" width="400"> 
+# QEEP Turing (Qual é esse Pokémon?)
+<img src="https://i.imgur.com/NAXImVj.jpg" width="800">
+<img src="https://img.shields.io/github/contributors/GrupoTuring/QEEP">
+<img src="https://img.shields.io/github/last-commit/GrupoTuring/QEEP">
+<br/>
 
-## Grupo Turing
-# Visão Computacional: Localização de Objetos
-#### Por: [Eduardo Eiras](https://github.com/dueiras);  [Camilla Fonseca](https://github.com/fonsecamilla); [Guilherme Salustiano](https://github.com/guissalustiano); [Luis Santos](https://github.com/luizsantos-1); [Luísa Heise](https://github.com/luisaheise); [Noel Eliezer](https://github.com/anor4k); [Rafael Coelho](https://github.com/rafael-acoelho); [Rodrigo Estevam](https://github.com/materloki); [Wesley de Almeida](https://github.com/WesPereira)
-Projeto da área Visão Computacional com o foco de fazer uma rede classificadora de objetos e a utilizar para criar um localizador de objetos.
+## O que é o QEEP?
+O QEEP Turing (Qual é esse Pokémon?) é um projeto desenvolvido pelos membros da área de Visão Computacional do grupo Turing para fazer a detecção de pokémons em imagens. O projeto começou com o objetivo de incentivar os membros a estudar e desenvolver, de maneira prática, técnicas de detecção de objetos.
 
-## Qual a diferença ?
+Para isso, membros fizeram um classificador de pokémons utilizando duas redes distintas: [ShuffleNet](https://towardsdatascience.com/review-shufflenet-v1-light-weight-model-image-classification-5b253dfe982f) e [MobileNet](https://towardsdatascience.com/review-mobilenetv1-depthwise-separable-convolution-light-weight-model-a382df364b69). E em seguida criaram um detector utilizando o algoritmo de [Sliding Windows](https://www.pyimagesearch.com/2015/03/23/sliding-windows-for-object-detection-with-python-and-opencv/). 
 
-- Um classificador de objetos recebe uma imagem e tem como output qual classe aquela imagem pertence.
-- Um localizador de objetos retorna onde em uma imagem contém uma determinada classe.
+Para clonar o repositório digitar:
 
-## Treinando o modelo
-Para realizar o _transfer learning_ foi utilizado o modelo da YOLOv3 da [ultralytics](https://github.com/ultralytics/yolov3). Para isso, o dataset deve seguir a estrutura descrita a seguir. A estrutura dos arquivo deve ser a seguinte:
+```bash
+$ git clone https://github.com/GrupoTuring/QEEP.git
 ```
-Pasta do modelo
---- data (pasta)
-    --- nome do dataset (pasta)
-        --- imagens (pasta)
-            --- img1.jpg
-            --- img2.jpg
-            ..........
-        --- rotulos (pasta)
-            --- img1.txt
-            --- img2.txt
-            ..........
-        --- treino.txt
-        --- validacao.txt
+
+## Requisitos
+Python 3.8 ou versões superiores e as dependências contidas no arquivo [`requiments.txt`](https://github.com/GrupoTuring/QEEP/blob/master/requirements.txt). Para instalá-las basta executar:
+```bash
+$ pip install -r requirements.txt
 ```
-Os arquivos <code>img*.txt</code> são arquivos que seguem a seguinte estrutura:
-```
-0 x_center y_center img_width img_height
-0 0.500968 0.550968 0.1203843 0.4503683
-0 0.500968 0.550968 0.1203843 0.4503683
-0 0.500968 0.550968 0.1203843 0.4503683
-...
-```
-Nesses arquivos, o primeiro parâmetro representa a classe do objeto que será classificado seguido da posição do centro dele (x_center, y_center). Em seguida, temos a largura e altura da caixa que envolve o objeto a ser classificado. **Vale ressaltar que todas as medidas são relativas ao tamanho da imagem a ser classificada**. Cada linha do arquivo contém um dos objetos a ser classificado na imagem.<br>
-Os arquivos <code>treino.txt</code> e <code>validacao.txt</code> contém o caminho relativo (considerando a raiz do projeto) para as imagens. Veja:
-```
-../data/dataset/imagens/img1.jpg
-../data/dataset/imagens/img2.jpg
-...
-```
+
+## Classificador
+O detector pode ser utilizado com 2 redes: MobileNet e ShuffleNet. Uma breve explicação de cada uma é apresentada abaixo.
+
+### MobileNet
+<img src="https://miro.medium.com/max/2414/1*RpIVS4iOLyNDVeTfFi2biw@2x.png" width="800">
+MobileNet é uma simplificação de redes neurais para possibilitar o seu uso em aplicações web, com isso podemos criar rapidamente uma aplicação de reconhecimento de images. É um modelo de CNN que implementa a chamada depthwise separable convolution, um recurso utilizado partindo do princípio da separação entre os dimensões de tensores (separação entre altura/largura e profundidade).
+
+Nesse repositório foi feito um [transfer learning](https://medium.com/turing-talks/deep-transfer-learning-a145125b754c) com tal rede utilizando a implementação padrão do PyTorch que pode ser [conferida aqui](https://pytorch.org/hub/pytorch_vision_mobilenet_v2/).
+
+
+### ShuffleNet
+<img src="https://miro.medium.com/max/1112/1*4YsmTx-vhYISZRFu7422lQ.png
+" width="800">
+A ShuffleNet é uma rede neural projetada especialmente para dispositivos móveis com poder de computação muito limitado. A arquitetura utiliza duas novas operações, convolução de grupo pontual e troca de canais, para reduzir significativamente o custo de computação, mantendo a precisão.
+
+Assim como na MobileNet, foi feito um [transfer learning](https://medium.com/turing-talks/deep-transfer-learning-a145125b754c) com tal rede utilizando a implementação padrão do PyTorch que pode ser [conferida aqui](https://pytorch.org/hub/pytorch_vision_shufflenet_v2/).
+
+### Comparativo
+Ambas as redes foram escolhidas visando eficiência e praticidade na hora da predição, podendo ser facilmente utilizadas numa aplicação web ou mobile. Um comparativo de tempo entre as redes foi elaborado.
+
+| Model | 1 imagem | 10 imagens | 100 imagens | 1000 imagens | 
+|---------- |------ |------ | ------ | :-------: |
+| [MobileNet](https://pytorch.org/hub/pytorch_vision_mobilenet_v2/) | 43.3   | 43.3   | 63.0  | 4.8ms     |
+| [ShuffleNet](https://pytorch.org/hub/pytorch_vision_shufflenet_v2/)  | 44.3   | 44.3   | 64.6  | 4.9ms     |
+
+
+
+## Inferência
+
+## Treinamento
+
+## Sobre Nós
+O Grupo Turing é o grupo de extensão acadêmica da Universidade de São Paulo que estuda, dissemina e aplica conhecimentos de Inteligência Artificial. Surgiu em 2015 como um grupo de estudos originalmente idealizado por duas mulheres, fundado por um grupo de três politécnicos e batizado em homenagem a Alan Turing (1912-1954), matemático e lógico inglês considerado o pai da computação.
+
+## Contate-nos
+Caso queira conhecer melhor o Grupo Turing podem nos acompanhar em nossas redes sociais:
+
+- [Facebook](https://www.facebook.com/grupoturing.usp)
+- [Linkedin](https://www.linkedin.com/company/grupo-turing/)
+- [Instagram](https://www.instagram.com/grupoturing.usp/)
+- [Medium](https://medium.com/turing-talks)
+- [Discord](https://discord.com/invite/26RGmBS)
