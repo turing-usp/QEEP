@@ -1,6 +1,6 @@
 # QEEP Turing (Qual é esse Pokémon?)
-<img src="https://i.imgur.com/NAXImVj.jpg" width="1000">
-<img src="https://img.shields.io/github/contributors/GrupoTuring/QEEP"> <img src="https://img.shields.io/github/last-commit/GrupoTuring/QEEP">
+<span><img src="https://i.imgur.com/NAXImVj.jpg" width="1000"></span>
+<span><img src="https://img.shields.io/github/contributors/GrupoTuring/QEEP"> <img src="https://img.shields.io/github/last-commit/GrupoTuring/QEEP"></span>
 
 ## O que é o QEEP?
 O QEEP Turing (Qual é esse Pokémon?) é um projeto desenvolvido pelos membros da área de Visão Computacional do grupo Turing para fazer a detecção de pokémons em imagens. O projeto começou com o objetivo de incentivar os membros a estudar e desenvolver, de maneira prática, técnicas de detecção de objetos.
