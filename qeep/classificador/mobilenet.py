@@ -1,11 +1,9 @@
 import torch
 import torch.nn as nn
-from ..util.model_validation import ModelValidation
-from ..util.model_dataset import ModelDataset
-from ..util.model_storage import ModelStorage
+from ..util.model import ModelUtil
 
 
-class MobileNet(ModelValidation, ModelStorage, ModelDataset):
+class MobileNet(ModelUtil):
     def __init__(self, output_size: int):
         model = torch.hub.load('pytorch/vision:v0.6.0',
                                'mobilenet_v2', pretrained=True)
