@@ -4,10 +4,8 @@
 # Conversão do classificador em um detector
 
 # import the necessary packages
-from tensorflow.keras.applications import ResNet50
 from tensorflow.keras.applications.resnet import preprocess_input
 from tensorflow.keras.preprocessing.image import img_to_array
-from tensorflow.keras.applications import imagenet_utils
 from imutils.object_detection import non_max_suppression
 from detection_helpers import sliding_window
 from detection_helpers import image_pyramid
@@ -50,8 +48,7 @@ INPUT_SIZE = (224, 224)
 
 # load our network weights from disk
 print("[INFO] loading network...")
-#model = ResNet50(weights="imagenet", include_top=True)
-model = loadModel(drive=False)
+model = loadModel(model="shufle", file="weights.pkl",drive=False)
 #Muda o modelo para evaluation mode
 
 # load the input image from disk, resize it such that it has the
@@ -114,7 +111,6 @@ print("[INFO] looping over pyramid/windows took {:.5f} seconds".format(
 	end - start))
 # convert the ROIs to a NumPy array
 rois = np.array(rois,dtype="int8")
-print(len(rois))
 # classify each of the proposal ROIs using ResNet and then show how
 # long the classifications took
 
@@ -126,7 +122,6 @@ preds = getPredictions(model,class_names=classes,image_arrays=rois,quiet=True)
 preds = list(map(lambda x : x.detach().cpu().numpy(), preds))
 preds = np.array(preds)
 preds = preds[:,:,:151]
-print(np.array(preds).shape)
 end = time.time()
 print("[INFO] classifying ROIs took {:.5f} seconds".format(
 	end - start))
@@ -137,11 +132,6 @@ for pred in preds:
 	top_indice = pred.argsort()[0,-1]
 	result = (top_indice,classes[top_indice],pred[0][top_indice])
 	results.append(result)
-	#print(len(top_indices[0]))
-	
-	#print(result)
-
-#print(results)
 preds = results
 
 
