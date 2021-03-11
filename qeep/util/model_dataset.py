@@ -1,6 +1,9 @@
 from pathlib import Path
 from torchvision import transforms, datasets
+import gdown
 import torch
+import zipfile
+import os
 
 default_transform = transforms.Compose([
     transforms.Resize((256, 256)),
@@ -18,6 +21,33 @@ class ModelDataset():
     model: torch.nn.Module
     dataset: datasets.ImageFolder
     dataloader: torch.utils.data.DataLoader
+
+    def download_dataset(self, path: str = "./data", url: str = "https://drive.google.com/uc?export=download&id=1SA7wV7BwEpNoR721aUSauFvqCTfXba1h"):
+        """
+        Descrição
+        -------
+        Baixa o dataset do drive
+
+        Local em que o dataset será salvo
+        """
+        p = Path(path + ".zip")
+        pzip = Path(p.name + ".zip")
+
+        if p.exists():
+            return
+
+        print("dowload from", url)
+        try:
+            gdown.download(url, pzip.name, quiet=False)
+        except Exception as err:
+            print("Arquivo não encontrado")
+            print(str(err))
+            return
+
+        with zipfile.ZipFile(pzip, 'r') as zip_ref:
+            zip_ref.extractall(p.parent)
+
+        os.remove(pzip)
 
     def load_dataset(self, path: str = "./data", tranform: torch.nn.Module = None):
         """
@@ -93,6 +123,7 @@ class ModelDataset():
 
     def dataset_load_all(self, path: str = "./data", tranform: torch.nn.Module = None, tresh_hold: float = 0.8, batch_size: int = 4, num_workers: int = 4):
         """Vê as documentações das outras ai por favor, nunca te pedi nada"""
+        self.download_dataset(path)
         self.load_dataset(path, tranform)
         self.split_dataset(tresh_hold)
         self.dataset_loader(batch_size, num_workers)
