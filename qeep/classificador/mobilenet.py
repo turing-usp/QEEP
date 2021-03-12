@@ -18,9 +18,30 @@ class MobileNet(ModelUtil):
 
 
 if __name__ == "__main__":
+    import argparse
+
+    parser = argparse.ArgumentParser(
+        description='Treina na mobilet')
+    parser.add_argument('-t', '--train', default=True,
+                        type=bool, help='Treino')
+    parser.add_argument('-e', '--epochs', default=25,
+                        type=int, help='Numero de epocas treinadas')
+    parser.add_argument('-d', '--dataset', default="./data",
+                        type=str, help='Path do dataset')
+    parser.add_argument('-l', '--learningrate', default=0.001, type=float,
+                        help='Learning Rate')
+    parser.add_argument('-b', '--bathsize', default=4, type=int,
+                        help='Bath Size')
+
+    args = parser.parse_args()
+
     mobilenet = MobileNet(151)
     # mobilenet.loadModel("mobilenet_weights.pkl")
     mobilenet.show()
-    mobilenet.dataset_load_all()
-    mobilenet.trainModel(epochs=5)
-    mobilenet.saveModel("mobilenet_weights.pkl")
+    if (args.train):
+        mobilenet.dataset_load_all(path=args.dataset, batch_size=args.bathsize)
+        mobilenet.trainModel(epochs=args.epochs, learning_rate=args.learningrate)
+        mobilenet.saveModel("mobilenet_weights.pkl")
+    else:
+        # Parte que roda em uma imagem
+        pass

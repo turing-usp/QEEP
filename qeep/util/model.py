@@ -122,7 +122,7 @@ class ModelUtil():
 
         Local em que o dataset será salvo
         """
-        p = Path(path + ".zip")
+        p = Path(path)
         pzip = Path(p.name + ".zip")
 
         if p.exists():
