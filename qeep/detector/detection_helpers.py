@@ -47,7 +47,7 @@ def img_to_array(img: Image) -> np.array:
 	# Saidas
 		x: A imagem em Numpy array
 	"""
-	x = np.asarray(img)
+	x = np.asarray(img, dtype="int8")
 	if len(x.shape) == 2:
 		x = x.reshape((x.shape[0], x.shape[1], 1))
 	elif len(x.shape) != 3:
