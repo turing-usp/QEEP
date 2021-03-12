@@ -3,6 +3,7 @@ import imutils
 import numpy as np
 import PIL as Image
 
+
 def sliding_window(image: Image, step: int, ws: tuple) -> Image:
 	"""Passa a janela deslizante na imagem.
 	# Entradas
@@ -17,6 +18,7 @@ def sliding_window(image: Image, step: int, ws: tuple) -> Image:
 		for x in range(0, image.shape[1] - ws[0], step):
 			# yield a janela atual
 			yield (x, y, image[y:y + ws[1], x:x + ws[0]])
+
 
 def image_pyramid(image: Image, scale:float =1.5, minSize:tuple=(224, 224))-> Image:
 	"""Aplica o algoritmo de piramide na imagem
