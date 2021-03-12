@@ -16,6 +16,8 @@ import time
 import cv2
 import torch
 import sys
+from typing import List
+import PIL as Image
 
 # Adiciona o path dos outros módulos
 sys.path.insert(1, '..')
@@ -23,7 +25,7 @@ sys.path.insert(1, '..')
 from util.storage import loadModel
 from util.validation import getPredictions
 
-def get_rois(original_img, PYR_SCALE, WIN_STEP, ROI_SIZE, visualize):
+def get_rois(original_img: Image, PYR_SCALE: float, WIN_STEP: int, ROI_SIZE: tuple, visualize: int):
 
     # Inicializa a pirâmide da imagem
     pyramid = image_pyramid(original_img, scale=PYR_SCALE, minSize=ROI_SIZE)
@@ -81,8 +83,15 @@ def get_rois(original_img, PYR_SCALE, WIN_STEP, ROI_SIZE, visualize):
     
     return rois, locs
 
-def classify_rois(model, rois, classes):
-
+def classify_rois(model: torch.nn.Module, rois: np.array, classes: List[str]) -> List[tuple]:
+	"""Classifica as ROIs
+	# Entradas
+		model: modelo
+		rois: regioes a serem classificadas.
+		classes: lista com as possiveis classes.
+	# Saidas
+		A imagem para passar as janelas deslizantes
+	"""
     print("[INFO] Classificando as ROIs")
     # Tempo inicial da classificação das ROIs
     start = time.time()
@@ -114,8 +123,15 @@ def classify_rois(model, rois, classes):
     return results
 
 
-def filter_detections(original_img, preds, locs, min_conf, visualize):
-
+def filter_detections(original_img:Image, preds:List[tuple], locs:np.array, min_conf:float, visualize:int):
+	"""Mostra as predições
+	# Entradas
+		original_img: imagem original.
+		preds: lista com as prediçoes (indice, classe, probabilidade).
+		locs: localização das janelas classificadas
+		min_conf: probabilidade minima para se considerar uma detecçao valida
+		visualize: variavel de debub, se >0 permite visualizar passos intermediarios do processo
+	"""
     # Inicializa dicionário de predições separado por classes
 
     labels = {}
@@ -194,7 +210,7 @@ if __name__ == '__main__':
 
     # Carregamento do modelo
     print("[INFO] loading network...")
-    model = loadModel(model = "mobilenet")
+    model = loadModel(model = "shufflenet", file="weights.pkl", drive=False)
 
     # Carrega a imagem selecionada
     image = cv2.imread(args["image"])
