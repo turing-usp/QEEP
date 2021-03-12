@@ -27,9 +27,9 @@ def image_pyramid(image: Image, scale:float =1.5, minSize:tuple=(224, 224))-> Im
 	# Saidas
 		A imagem para passar as janelas deslizantes
 	"""
-	# yield the original image
+	# yield a imagem original
 	yield image
-	# keep looping over the image pyramid
+	# loop para pegar todas as imagens da piramide
 	while True:
 		# computa o tamanho da proxima imagem
 		w = int(image.shape[1] / scale)
