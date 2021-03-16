@@ -4,15 +4,15 @@ from ..util.model import ModelUtil
 
 
 class MobileNet(ModelUtil):
-    def __init__(self, output_size: int):
+    def __init__(self, output_size: int, freeze: bool = True):
         model = torch.hub.load('pytorch/vision:v0.6.0',
                                'mobilenet_v2', pretrained=True)
-
+        if freeze:
+            for param in model.parameters():
+                param.requires_grad = False
         num_ftrs = model.classifier[-1].in_features
         model.classifier[-1] = nn.Linear(num_ftrs, output_size)
-
-        # model_output = model.classifier[-1].out_features
-        # model.classifier.append(nn.Softmax(output_size))
+        model.classifier.add_module('2', nn.Softmax())
 
         self.model = model.to(self.device)
 
