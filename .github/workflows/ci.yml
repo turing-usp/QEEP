@@ -14,8 +14,8 @@ jobs:
       - name: Install linters
         run: pip install -r requirements.dev.txt
 
-      - name: Run flask8
-        run: flask8 .
+      - name: Run flake8
+        run: flake8 .
       
       - name: Run pylint
         run: pylint qeep
