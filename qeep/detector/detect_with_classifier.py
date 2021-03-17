@@ -4,9 +4,9 @@
 
 # Conversão de uma CNN classificadora em um detector de objetos com Pytorch
 
-from detection_helpers import img_to_array
-from detection_helpers import sliding_window
-from detection_helpers import image_pyramid
+from qeep.detector.detection_helpers import (img_to_array, 
+											 sliding_window, 
+											 image_pyramid)
 from imutils.object_detection import non_max_suppression
 import json
 import numpy as np
@@ -22,11 +22,10 @@ from typing import Type
 from typing import Tuple
 
 # Adiciona o path dos outros módulos
-sys.path.insert(1, '..')
+#sys.path.insert(1, '..')
 #from classificador.classes import loadClasses
-from util.storage import loadModel
-from util.validation import getPredictions
-
+from qeep.util.validation import getPredictions
+from qeep.classificador.mobilenet import MobileNet
 
 def get_rois(original_img: Image, PYR_SCALE: float, WIN_STEP: int, ROI_SIZE: tuple, visualize: int) -> Tuple[List[np.array], List[Tuple[float, float, float, float]]]:
 
@@ -215,8 +214,9 @@ if __name__ == '__main__':
 
 	# Carregamento do modelo
 	print("[INFO] Carregando o modelo...")
-	model = loadModel(model = "mobilenet")
-
+	model = MobileNet(151)
+	#model.loadModel()
+	model = model.model.eval()
 	# Carrega a imagem selecionada
 	image = cv2.imread(args["image"])
 	image = imutils.resize(image, width = WIDTH)

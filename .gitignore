@@ -3,5 +3,8 @@
 .ipynb_checkpoints
 **/__pycache__
 Imagens
-
+**/*.png
+**/*.jpeg
+**/*.jpg
+**/*.pkl
 **/data
