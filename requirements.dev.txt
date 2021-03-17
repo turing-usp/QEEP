@@ -1,0 +1,15 @@
+pylint
+flake8
+cohesion
+flake8-requirements
+flake8-implicit-str-concat
+flake8-nb
+flake8-bugbear
+flake8-requests
+flake8-comprehensions
+flake8-pathlib
+flake8-string-format
+flake8-printf-formatting
+flake8-mypy
+flake8-eradicate
+vulture
