@@ -113,8 +113,6 @@ def classify_rois(model: torch.nn.Module, rois: np.array, classes: List[str]) ->
 	# Transforma as predições em um array
 	preds = list(map(lambda x : x.detach().cpu().numpy(), preds))
 	preds = np.array(preds)
-	# Seleciona apenas as primeiras 151 classes de saída (erro no modelo) 
-	preds = preds[:,:,:len(classes)]
 
 	# Tempo final da classificação das ROIs
 	end = time.time()
