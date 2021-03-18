@@ -20,15 +20,24 @@ from typing import List
 import PIL as Image
 from typing import Type
 from typing import Tuple
-
-# Adiciona o path dos outros módulos
-#sys.path.insert(1, '..')
-#from classificador.classes import loadClasses
 from qeep.util.validation import getPredictions
 from qeep.classificador.mobilenet import MobileNet
 
-def get_rois(original_img: Image, PYR_SCALE: float, WIN_STEP: int, ROI_SIZE: tuple, visualize: int) -> Tuple[List[np.array], List[Tuple[float, float, float, float]]]:
 
+def get_rois(original_img: Image, PYR_SCALE: float,
+		      WIN_STEP: int, ROI_SIZE: tuple, 
+		      visualize: int) -> Tuple[List[np.array], List[Tuple[float, float, float, float]]]:
+	"""Itera sobre o metodo da piramide para gerar as regiões de interesse
+	# Entradas
+		Image: Imagem de entrada
+		PYR_SCALE: escala usada no metodo da piramide.
+		WIN_STEP: passo entre cada window.
+		ROI_SIZE: tamanho da janela.
+		visualize: se > 0 entra em modo debug e visualiza cada janela na imagem original	
+	# Saidas
+		rois : regiões de interesse a serem classificadas
+		locs : localização de cada roi na imagem original
+	"""
 	# Inicializa a pirâmide da imagem
 	pyramid = image_pyramid(original_img, scale=PYR_SCALE, minSize=ROI_SIZE)
 	# Inicializa a lista de ROIs (Regiões de Interesse) geradas pela 
@@ -224,4 +233,4 @@ if __name__ == '__main__':
 	# Roda o detector
 	rois, locs = get_rois(image, PYR_SCALE, WIN_STEP, ROI_SIZE, args["visualize"])
 	predictions = classify_rois(model, rois, classes)
-	filter_detections(image, predictions, locs, args["min_conf"], args["visualize"])
+	filter_detections(image, predictions, locs, args["min_conf"], args["visualize"]) 
