@@ -1,17 +1,22 @@
-from pathlib import Path
-from torchvision import transforms, datasets
 from typing import List
+from pathlib import Path
 import gdown
-import os
 import torch
 import zipfile
+from torchvision import transforms, datasets
+
+DRIVE_DOWNLOAD_URL = "https://drive.google.com/uc?export=download&id="
 
 
 class PokeDataset:
+    """
+    Cria uma classe com metodos para manipular o dataset do pokemon
+    """
 
     tranform: torch.nn.Module
     datasetpath: Path
     dataset: datasets.ImageFolder
+    dataset_classes: List[str]
     dataset_splited: List[torch.utils.data.Dataset]
 
     def __init__(
@@ -48,7 +53,7 @@ class PokeDataset:
 
     def download(
         self,
-        url: str = "https://drive.google.com/uc?export=download&id=1SA7wV7BwEpNoR721aUSauFvqCTfXba1h",
+        drive_id: str = "1SA7wV7BwEpNoR721aUSauFvqCTfXba1h",
     ):
         """
         Descrição
@@ -57,8 +62,8 @@ class PokeDataset:
 
         Entradas
         --------
-        path: str
-        Local em que o dataset será salvo
+        drive_id: str
+        Id do drive
         """
 
         # Se o dataset já existe, não baixa novamente
@@ -66,12 +71,14 @@ class PokeDataset:
             return
 
         datasetpath_zip = Path(self.datasetpath.name + ".zip")
-        gdown.download(url, datasetpath_zip.name, quiet=False)
+        gdown.download(
+            DRIVE_DOWNLOAD_URL + drive_id, datasetpath_zip.name, quiet=False
+        )
 
         with zipfile.ZipFile(datasetpath_zip, "r") as zip_ref:
             zip_ref.extractall(self.datasetpath.parent)
 
-        os.remove(datasetpath_zip)
+        datasetpath_zip.unlink()
 
     def load(self):
         """
@@ -124,12 +131,12 @@ class PokeDataset:
         if self.dataset is None:
             self.load()
 
-        nDivision = [
+        n_division = [
             round(len(self.dataset) * tresh_hold),
             round(len(self.dataset) * (1 - tresh_hold)),
         ]
         self.dataset_splited = torch.utils.data.random_split(
-            self.dataset, nDivision
+            self.dataset, n_division
         )
 
     def loaders(

@@ -2,11 +2,11 @@ from torchvision import transforms
 from typing import Type, List
 import copy
 import gdown
-import os
 import time
 import torch
 import torch.nn as nn
 import torch.optim as optim
+from pathlib import Path
 
 
 class ModelUtil:
@@ -52,7 +52,7 @@ class ModelUtil:
         dataloaders = {"train": train_dataloader, "val": val_dataloader}
 
         for epoch in range(epochs):
-            print("Epoch {}/{}".format(epoch, epochs - 1))
+            print(f"Epoch {epoch}/{epochs - 1}")
             print("-" * 10)
 
             # Each epoch has a training and validation phase
@@ -94,11 +94,7 @@ class ModelUtil:
                 epoch_loss = running_loss
                 epoch_acc = running_corrects.double()
 
-                print(
-                    "{} Loss: {:.4f} Acc: {:.4f}".format(
-                        phase, epoch_loss, epoch_acc
-                    )
-                )
+                print(f"{phase} Loss: {epoch_loss:.4f} Acc: {epoch_acc:.4f}")
 
                 # deep copy the model
                 if phase == "val" and epoch_acc > best_acc:
@@ -109,11 +105,9 @@ class ModelUtil:
 
         time_elapsed = time.time() - since
         print(
-            "Training complete in {:.0f}m {:.0f}s".format(
-                time_elapsed // 60, time_elapsed % 60
-            )
+            f"Training complete in {time_elapsed // 60:.0f}m {time_elapsed % 60:.0f}s"
         )
-        print("Best val Acc: {:4f}".format(best_acc))
+        print(f"Best val Acc: {best_acc:4f}")
 
         # load best model weights
         self.model.load_state_dict(best_model_wts)
@@ -201,5 +195,5 @@ class ModelUtil:
             - path: string contendo o path para salvar o modelo
             - filename: string contendo o nome do arquivo salvo
         """
-        p = os.path.join(path, filename)
+        p = Path(path) / filename
         torch.save(self.model.state_dict(), p)

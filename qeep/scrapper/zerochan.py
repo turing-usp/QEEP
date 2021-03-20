@@ -37,7 +37,7 @@ def getImagesURLbyId(id: int) -> List[str]:
     links = []
     while True:
         page += 1
-        resp = requests.get(f"{url}?p={page}")
+        resp = requests.get(f"{url}?p={page}", timeout=10)
 
         if resp.status_code != 200:
             break

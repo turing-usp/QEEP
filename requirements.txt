@@ -5,3 +5,5 @@ requests
 beautifulsoup4
 filetype
 lxml
+urllib3
+Pillow

@@ -45,10 +45,11 @@ def _fillPokedex():
     if pokedex is not None:
         return
 
-    pokedex = dict()
+    pokedex = {}
 
     response = requests.get(
-        "https://raw.githubusercontent.com/veekun/pokedex/master/pokedex/data/csv/pokemon.csv"
+        "https://raw.githubusercontent.com/veekun/pokedex/master/pokedex/data/csv/pokemon.csv",
+        timeout=10,
     )
 
     # Break in lines and remove header

@@ -3,14 +3,11 @@ from pathlib import Path
 from functools import partial
 from multiprocessing import Pool
 
-# from . import bulbapedia
 from . import gameinfo
 from . import pokemondb
 from . import pokemon
 from . import pokeCards
 from . import serebii
-
-# from . import zerochan
 
 from ..util import image_repository as repository
 from ..util.pokedex import pokedex
@@ -19,7 +16,7 @@ from ..util.path import createDirIfNotExist
 _NUMBER_POOLS = 6
 
 
-def getAllImagesURLbyId(id: int) -> List[str]:
+def get_all_images_url_by_id(id: int) -> List[str]:
     """
     Descrição
     --------
@@ -44,12 +41,10 @@ def getAllImagesURLbyId(id: int) -> List[str]:
     acc += serebii.getImagesURLbyId(id)
     acc += pokeCards.getImagesURLbyId(id)
     acc += pokemondb.getImagesURLbyId(id)
-    # acc += zerochan.getImagesURLbyId(id) # gera alguns lixos
-    # acc += bulbapedia.getImagesURLbyId(id) # gera varios lixos
     return acc
 
 
-def getAllImagesbyId(id: int) -> List[bytes]:
+def get_all_images_by_id(id: int) -> List[bytes]:
     """
     Descrição
     --------
@@ -74,12 +69,10 @@ def getAllImagesbyId(id: int) -> List[bytes]:
     acc += serebii.getImagesbyId(id)
     acc += pokeCards.getImagesbyId(id)
     acc += pokemondb.getImagesbyId(id)
-    # acc += zerochan.getImagesbyId(id) # gera alguns lixos
-    # acc += bulbapedia.getImagesbyId(id) # gera varios lixos
     return acc
 
 
-def getAllImagesAndSaveById(id: int, base_path: Path) -> List[Path]:
+def get_all_images_and_save_by_id(id: int, base_path: Path) -> List[Path]:
     """
     Descrição
     --------
@@ -101,13 +94,15 @@ def getAllImagesAndSaveById(id: int, base_path: Path) -> List[Path]:
 
     """
     pokemon = pokedex[id]
-    imgs = getAllImagesbyId(id)
+    imgs = get_all_images_by_id(id)
     path = base_path / pokemon.name
     createDirIfNotExist(path)
     repository.writeImages(path, imgs)
 
 
-def getAllImagesAndSaveByIds(ids: List[int], base_path: Path) -> List[Path]:
+def get_all_images_and_save_by_ids(
+    ids: List[int], base_path: Path
+) -> List[Path]:
     """
     Descrição
     --------
@@ -129,6 +124,6 @@ def getAllImagesAndSaveByIds(ids: List[int], base_path: Path) -> List[Path]:
     Lista de urls encontradas
 
     """
-    f = partial(getAllImagesAndSaveById, base_path=base_path)
+    f = partial(get_all_images_and_save_by_id, base_path=base_path)
     with Pool(_NUMBER_POOLS) as p:
         p.map(f, ids)

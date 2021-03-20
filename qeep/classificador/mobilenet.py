@@ -24,7 +24,10 @@ class MobileNet(ModelUtil):
 
 def _main(args: argparse.Namespace):
     mobilenet = MobileNet(151)
-    # mobilenet.loadModel("mobilenet_weights.pkl")
+
+    if args.load:
+        mobilenet.loadModel("mobilenet_weights.pkl")
+
     mobilenet.show()
     if args.is_train:
         trasnformAugumentation = mobilenet.transforms + [
@@ -69,6 +72,14 @@ def _main(args: argparse.Namespace):
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(description="Treina na mobilet")
+    parser.add_argument(
+        "--load",
+        dest="load",
+        default=False,
+        type=bool,
+        help="Carrega os pesos do modelo",
+    )
+
     parser.add_argument(
         "--train",
         dest="is_train",

@@ -33,7 +33,7 @@ def getImagesURLbyId(id: int) -> List[str]:
     pokemon = pokedex[id]
     url = f"https://pokemondb.net/sprites/{pokemon.name}"
 
-    response = requests.get(url)
+    response = requests.get(url, timeout=10)
     soup = BeautifulSoup(response.text, features="lxml")
 
     pattern = r"https://img.pokemondb.net/sprites/.*"

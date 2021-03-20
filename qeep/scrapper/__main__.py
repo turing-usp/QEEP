@@ -1,4 +1,4 @@
-from . import getAllImagesAndSaveByIds
+from . import get_all_images_and_save_by_ids
 from pathlib import Path
 import argparse
 
@@ -17,4 +17,4 @@ parser.add_argument(
 
 args = parser.parse_args()
 path = Path(args.path)
-getAllImagesAndSaveByIds(range(args.begin, args.end + 1), path)
+get_all_images_and_save_by_ids(range(args.begin, args.end + 1), path)

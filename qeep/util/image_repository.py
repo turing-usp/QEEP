@@ -1,11 +1,11 @@
 from typing import List
-import requests
-from requests.adapters import HTTPAdapter
-from urllib3.util.retry import Retry
-import filetype
 from hashlib import md5
 from pathlib import Path
 from functools import cache
+from requests.adapters import HTTPAdapter
+from urllib3.util.retry import Retry
+import requests
+import filetype
 
 
 def _isImage(file) -> bool:
@@ -30,7 +30,7 @@ def _fileExtension(file) -> str:
 @cache
 def _resilientSession() -> requests.Session:
     # previne timeouts
-    session = requests.Session()
+    session = requests.Session()  # noqa: r2c-requests-use-timeout
     retry = Retry(connect=5, backoff_factor=0.5)
     adapter = HTTPAdapter(max_retries=retry)
     session.mount("http://", adapter)
@@ -132,7 +132,7 @@ def writeImage(dir_path: Path, img: bytes) -> Path:
     if filepath.exists():
         print(">", filepath, "já existe")
 
-    with open(filepath, mode="wb") as f:
+    with filepath.open("wb") as f:
         print("> Salvando", filepath)
         f.write(img)
 

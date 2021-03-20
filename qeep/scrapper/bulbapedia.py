@@ -3,9 +3,9 @@ Site base: https://bulbapedia.bulbagarden.net/wiki/Bulbapedia
 """
 
 from typing import List
+from hashlib import md5
 import requests
 from ..util.pokedex import pokedex
-from hashlib import md5
 from ..util.image_repository import downloadImgs
 
 
@@ -78,7 +78,7 @@ def getImagesURLbyId(id: int) -> List[str]:
     return links
 
 
-def getImagesbyId(id: int) -> List[bytes]:
+def get_images_by_id(pokemon_id: int) -> List[bytes]:
     """
     Descrição
     --------
@@ -86,7 +86,7 @@ def getImagesbyId(id: int) -> List[bytes]:
 
     Entradas
     --------
-    id: int
+    pokemon_id: int
     Numero da pokedex do pokemon
 
     Saídas
@@ -95,13 +95,13 @@ def getImagesbyId(id: int) -> List[bytes]:
     Lista de urls encontradas
 
     """
-    urls = getImagesURLbyId(id)
+    urls = getImagesURLbyId(pokemon_id)
     imgs = downloadImgs(urls)
     return imgs
 
 
 if __name__ == "__main__":
     for id in range(1, 2):
-        urls = getImagesURLbyId(id)
-        print(len(urls))
-        print(*urls, sep="\n")
+        imgs_urls = getImagesURLbyId(id)
+        print(len(imgs_urls))
+        print(*imgs_urls, sep="\n")
