@@ -12,8 +12,6 @@ from .scrapper import Scrapper, Session
 
 FILTER_CARDS = "basic-pokemon=on&stage-1-pokemon=on&stage-2-pokemon=on&level-up-pokemon=on&ex-pokemon=on&mega-ex=on&special-pokemon=on&pokemon-legend=on&restored-pokemon=on&break=on&pokemon-gx=on&pokemon-v=on&pokemon-vmax=on"
 
-BASE_URL = "https://www.pokemon.com/us/pokemon-tcg/pokemon-cards/"
-
 
 class PokemonOficialCardsScrapper(Scrapper):
     """Site base: https://pokemon.com"""
@@ -23,10 +21,10 @@ class PokemonOficialCardsScrapper(Scrapper):
 
     def get_images_url(self) -> List[str]:
         """ Descobre todas as imagens no site"""
-        pokemon = pokedex[id]
+        pokemon = pokedex[self.pokemon_id]
 
         def url(page=1):
-            return f"{BASE_URL}/{page}?cardName={pokemon.name}&{FILTER_CARDS}"
+            return f"https://www.pokemon.com/us/pokemon-tcg/pokemon-cards/{page}?cardName={pokemon.name}&{FILTER_CARDS}"
 
         page = 0
         urls = []
