@@ -1,6 +1,10 @@
-from . import get_all_images_and_save_by_ids
+"""
+    argparser funtion
+"""
+
 from pathlib import Path
 import argparse
+from . import get_all_images_and_save_by_ids
 
 parser = argparse.ArgumentParser(
     description="Baixa imagens de pokemons em um diretorio"

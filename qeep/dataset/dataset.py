@@ -1,8 +1,12 @@
+"""
+    PokeDataset
+"""
+
 from typing import List
 from pathlib import Path
+import zipfile
 import gdown
 import torch
-import zipfile
 from torchvision import transforms, datasets
 
 DRIVE_DOWNLOAD_URL = "https://drive.google.com/uc?export=download&id="

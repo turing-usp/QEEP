@@ -5,7 +5,7 @@
 
 import requests
 
-pokedex = None
+pokedex = {}
 
 
 class Pokemon:
@@ -23,29 +23,26 @@ class Pokemon:
     Nome do pokemon
     """
 
-    id: int = None
+    pokeid: int = None
     name: str = None
 
-    def __init__(self, id: str, name: str):
-        self.id = id
+    def __init__(self, pokemon_id: str, name: str):
+        self.pokeid = pokemon_id
         self.name = name
 
     def __str__(self):
-        return f"#{self.id:03}-{self.name}"
+        return f"#{self.pokeid:03}-{self.name}"
 
     def __repr__(self):
-        return f"Pokemon({self.id},{self.name})"
+        return f"Pokemon({self.pokeid},{self.name})"
 
 
-def _fillPokedex():
+def _fill_pokedex(acc):
     """
     Prenche a variavel global com os pokemons oriundos de um csv
     """
-    global pokedex
-    if pokedex is not None:
+    if len(acc) > 0:
         return
-
-    pokedex = {}
 
     response = requests.get(
         "https://raw.githubusercontent.com/veekun/pokedex/master/pokedex/data/csv/pokemon.csv",
@@ -53,16 +50,16 @@ def _fillPokedex():
     )
 
     # Break in lines and remove header
-    pokedexData = response.text.split("\n")[1:]
-    for pokedexLine in pokedexData:
-        if pokedexLine.strip(" ,") == "":
+    pokedex_data = response.text.split("\n")[1:]
+    for pokedex_line in pokedex_data:
+        if pokedex_line.strip(" ,") == "":
             continue
 
-        [id, name, *_] = pokedexLine.split(",")
-        id = int(id)  # Grr odeio a tipagem fraca de python
-        pokemon = Pokemon(id, name)
-        pokedex[id] = pokemon
-        pokedex[name] = pokemon
+        [pokeid, name, *_] = pokedex_line.split(",")
+        pokeid = int(pokeid)  # Grr odeio a tipagem fraca de python
+        pokemon = Pokemon(pokeid, name)
+        acc[pokeid] = pokemon
+        acc[name] = pokemon
 
 
-_fillPokedex()
+_fill_pokedex(pokedex)

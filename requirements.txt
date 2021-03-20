@@ -6,4 +6,5 @@ beautifulsoup4
 filetype
 lxml
 urllib3
+iteration_utilities
 Pillow

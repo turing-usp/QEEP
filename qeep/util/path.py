@@ -1,8 +1,12 @@
+"""
+    Funções uteis para o Path
+"""
+
 from pathlib import Path
 from typing import Union
 
 
-def createDirIfNotExist(path: Union[Path, str]) -> None:
+def create_dir_if_not_exist(path: Union[Path, str]) -> None:
     """
     Descrição
     --------

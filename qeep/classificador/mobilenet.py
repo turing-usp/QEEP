@@ -1,13 +1,21 @@
+"""
+    MobileNet
+"""
+
+import argparse
 import torch
 import torch.nn as nn
 import torch.optim as optim
 from torchvision import transforms
 from ..util.model import ModelUtil
 from ..dataset.dataset import PokeDataset
-import argparse
 
 
 class MobileNet(ModelUtil):
+    """
+    MobileNet
+    """
+
     def __init__(self, output_size: int, freeze: bool = True):
         model = torch.hub.load(
             "pytorch/vision:v0.6.0", "mobilenet_v2", pretrained=True
@@ -26,15 +34,15 @@ def _main(args: argparse.Namespace):
     mobilenet = MobileNet(151)
 
     if args.load:
-        mobilenet.loadModel("mobilenet_weights.pkl")
+        mobilenet.load("mobilenet_weights.pkl")
 
     mobilenet.show()
     if args.is_train:
-        trasnformAugumentation = mobilenet.transforms + [
+        trasnform_augumentation = mobilenet.transforms + [
             transforms.RandomHorizontalFlip(),
             transforms.RandomVerticalFlip(),
         ]
-        dataset = PokeDataset(trasnformAugumentation, args.dataset_path)
+        dataset = PokeDataset(trasnform_augumentation, args.dataset_path)
         dataset.download(args.dataset_url)
         dataset.load()
         dataset.split(args.dataset_tresh_hold)
@@ -44,7 +52,7 @@ def _main(args: argparse.Namespace):
             args.dataloader_shuffle,
         )
 
-        criterion = nn.NLLLoss()  # TODO: Fix loss
+        criterion = nn.NLLLoss()
         optimizer = optim.SGD(
             mobilenet.model.parameters(),
             lr=args.optimizer_learning_rate,
@@ -184,6 +192,6 @@ if __name__ == "__main__":
         help="Para salvar o modelo",
     )
 
-    args = parser.parse_args()
+    parse_args = parser.parse_args()
 
-    _main(args)
+    _main(parse_args)

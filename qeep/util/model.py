@@ -1,12 +1,18 @@
-from torchvision import transforms
+"""
+    Basic model funcitons
+"""
+
 from typing import Type, List
-import copy
-import gdown
 import time
+from pathlib import Path
+import copy
+from torchvision import transforms
+import gdown
 import torch
 import torch.nn as nn
 import torch.optim as optim
-from pathlib import Path
+
+DRIVE_URL = "https://drive.google.com/uc?export=download&id="
 
 
 class ModelUtil:
@@ -16,25 +22,29 @@ class ModelUtil:
 
     model: torch.nn.Module
 
-    def __call__(self, x):
-        self.model(x)
+    def __call__(self, value):
+        """ Allow self(x) name """
+        self.model(value)
 
     def show(self):
+        """ Print model layers """
         print(self.model.eval())
 
     @property
     def device(self) -> str:
+        """ Try use devices """
         return "cuda:0" if torch.cuda.is_available() else "cpu"
 
     @property
     def transforms(self) -> List[torch.nn.Module]:
+        """ Basic transforms """
         return [
             transforms.Resize((256, 256)),
             transforms.ToTensor(),
             transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225]),
         ]
 
-    def train(
+    def train(  # noqa: PLR0914, PLR0913
         self,
         criterion: nn.Module,
         optimizer: optim.Optimizer,
@@ -43,6 +53,7 @@ class ModelUtil:
         val_dataloader: torch.utils.data.DataLoader,
         epochs: int = 25,
     ):
+        """ Train function with gradient descendent """
 
         since = time.time()
 
@@ -113,10 +124,6 @@ class ModelUtil:
         self.model.load_state_dict(best_model_wts)
         return self.model
 
-        print(f"Train Loss: {epoch_loss:.4f} Acc: {epoch_acc:.4f}")
-        print(f"Validation Accuracy: {self.accuracy()}")
-        print()
-
     def accuracy(self, dataloader: torch.utils.data.DataLoader = None):
         """
         Descrição
@@ -148,7 +155,7 @@ class ModelUtil:
         self,
         file: str = "weights.pkl",
         drive: bool = True,
-        url: str = "https://drive.google.com/uc?export=download&id=1yC0qK0gVX5sc6GTpBPBupH3TSFssLkqS",
+        drive_id: str = "1yC0qK0gVX5sc6GTpBPBupH3TSFssLkqS",
     ) -> nn.Module:
         """
         Descrição
@@ -171,20 +178,16 @@ class ModelUtil:
         Define se o modelos será carregado do Google Drive
         ou localmente
 
-        url: (Url)
-        Endereço de onde o arquivo deverá ser baixado, caso
+        drive_id: (str)
+        Id do drive que está hospedado
         drive = True.
 
         """
         if drive:
-            try:
-                gdown.download(url, file, quiet=False)
-            except Exception as err:
-                print(str(err))
-                print("Rede pré treinada não pode ser baixada.")
+            gdown.download(DRIVE_URL + drive_id, file, quiet=False)
 
-        st = torch.load(file, map_location=self.device)
-        self.model.load_state_dict(st)
+        model_st = torch.load(file, map_location=self.device)
+        self.model.load_state_dict(model_st)
 
     def save(self, filename: str, path: str = "") -> Type[None]:
         """
@@ -195,5 +198,5 @@ class ModelUtil:
             - path: string contendo o path para salvar o modelo
             - filename: string contendo o nome do arquivo salvo
         """
-        p = Path(path) / filename
-        torch.save(self.model.state_dict(), p)
+        filepath = Path(path) / filename
+        torch.save(self.model.state_dict(), filepath)
