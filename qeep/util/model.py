@@ -1,75 +1,77 @@
-from pathlib import Path
-from torch.optim import lr_scheduler
-from torchvision import transforms, datasets
+"""
+    Basic model funcitons
+"""
+
 from typing import Type, List
-import copy
-import gdown
-import os
 import time
+from pathlib import Path
+import copy
+from torchvision import transforms
+import gdown
 import torch
 import torch.nn as nn
 import torch.optim as optim
-import zipfile
 
-default_transform = transforms.Compose([
-    transforms.Resize((256, 256)),
-    transforms.RandomHorizontalFlip(),
-    transforms.RandomVerticalFlip(),
-    transforms.ToTensor(),
-    transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
-])
+DRIVE_URL = "https://drive.google.com/uc?export=download&id="
 
 
-class ModelUtil():
+class ModelUtil:
     """
     Classe basica para manipular, treinar, e carregar modelos
     """
-    model: torch.nn.Module
-    dataset: datasets.ImageFolder
-    dataloaders: List[torch.utils.data.DataLoader]
 
-    def __call__(self, x):
-        self.model(x)
+    model: torch.nn.Module
+
+    def __call__(self, value):
+        """ Allow self(x) name """
+        self.model(value)
+
+    def show(self):
+        """ Print model layers """
+        print(self.model.eval())
 
     @property
-    def device(self, name: str = "model") -> str:
-        return 'cuda:0' if torch.cuda.is_available() else 'cpu'
+    def device(self) -> str:
+        """ Try use devices """
+        return "cuda:0" if torch.cuda.is_available() else "cpu"
 
-    def trainModel(self, criterion=None, optimizer=None, scheduler: optim.lr_scheduler.StepLR = None,
-                   epochs: int = 25, learning_rate: float = 0.001):
-        if criterion is None:
-            criterion = nn.NLLLoss() # change loss
-        if optimizer is None:
-            optimizer = optim.SGD(self.model.parameters(),
-                                  lr=learning_rate, momentum=0.9)
-        if scheduler is None:
-            scheduler = optim.lr_scheduler.StepLR(
-                optimizer, step_size=7, gamma=0.1)
+    @property
+    def transforms(self) -> List[torch.nn.Module]:
+        """ Basic transforms """
+        return [
+            transforms.Resize((256, 256)),
+            transforms.ToTensor(),
+            transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225]),
+        ]
+
+    def train(  # noqa: PLR0914, PLR0913
+        self,
+        criterion: nn.Module,
+        optimizer: optim.Optimizer,
+        scheduler: optim.lr_scheduler.StepLR,
+        train_dataloader: torch.utils.data.DataLoader,
+        val_dataloader: torch.utils.data.DataLoader,
+        epochs: int = 25,
+    ):
+        """ Train function with gradient descendent """
 
         since = time.time()
 
         best_model_wts = copy.deepcopy(self.model.state_dict())
         best_acc = 0.0
 
-        dataloaders = {
-            'train': self.dataloaders[0],
-            'val': self.dataloaders[-1]
-        }
-        dataset_sizes = {
-            'train': len(self.dataset_splited[0]),
-            'val': len(self.dataset_splited[-1])
-        }
+        dataloaders = {"train": train_dataloader, "val": val_dataloader}
 
         for epoch in range(epochs):
-            print('Epoch {}/{}'.format(epoch, epochs - 1))
-            print('-' * 10)
+            print(f"Epoch {epoch}/{epochs - 1}")
+            print("-" * 10)
 
             # Each epoch has a training and validation phase
-            for phase in ['train', 'val']:
-                if phase == 'train':
+            for phase in ["train", "val"]:
+                if phase == "train":
                     self.model.train()  # Set model to training mode
                 else:
-                    self.model.eval()   # Set model to evaluate mode
+                    self.model.eval()  # Set model to evaluate mode
 
                 running_loss = 0.0
                 running_corrects = 0
@@ -84,49 +86,45 @@ class ModelUtil():
 
                     # forward
                     # track history if only in train
-                    with torch.set_grad_enabled(phase == 'train'):
+                    with torch.set_grad_enabled(phase == "train"):
                         outputs = self.model(inputs)
                         _, preds = torch.max(outputs, 1)
                         loss = criterion(outputs, labels)
 
                         # backward + optimize only if in training phase
-                        if phase == 'train':
+                        if phase == "train":
                             loss.backward()
                             optimizer.step()
 
                     # statistics
                     running_loss += loss.item() * inputs.size(0)
                     running_corrects += torch.sum(preds == labels.data)
-                if phase == 'train':
+                if phase == "train":
                     scheduler.step()
 
-                epoch_loss = running_loss / dataset_sizes[phase]
-                epoch_acc = running_corrects.double() / dataset_sizes[phase]
+                epoch_loss = running_loss
+                epoch_acc = running_corrects.double()
 
-                print('{} Loss: {:.4f} Acc: {:.4f}'.format(
-                    phase, epoch_loss, epoch_acc))
+                print(f"{phase} Loss: {epoch_loss:.4f} Acc: {epoch_acc:.4f}")
 
                 # deep copy the model
-                if phase == 'val' and epoch_acc > best_acc:
+                if phase == "val" and epoch_acc > best_acc:
                     best_acc = epoch_acc
                     best_model_wts = copy.deepcopy(self.model.state_dict())
 
             print()
 
         time_elapsed = time.time() - since
-        print('Training complete in {:.0f}m {:.0f}s'.format(
-            time_elapsed // 60, time_elapsed % 60))
-        print('Best val Acc: {:4f}'.format(best_acc))
+        print(
+            f"Training complete in {time_elapsed // 60:.0f}m {time_elapsed % 60:.0f}s"
+        )
+        print(f"Best val Acc: {best_acc:4f}")
 
         # load best model weights
         self.model.load_state_dict(best_model_wts)
         return self.model
 
-        print(f'Train Loss: {epoch_loss:.4f} Acc: {epoch_acc:.4f}')
-        print(f'Validation Accuracy: {self.modelAccuracy()}')
-        print()
-
-    def modelAccuracy(self, dataloader: torch.utils.data.DataLoader = None):
+    def accuracy(self, dataloader: torch.utils.data.DataLoader = None):
         """
         Descrição
         --------
@@ -143,9 +141,6 @@ class ModelUtil():
         corrects = 0
         total = 0
 
-        if dataloader is None:
-            dataloader = self.dataloaders[-1]
-
         with torch.no_grad():
             for batch in dataloader:
                 images, labels = batch
@@ -154,118 +149,14 @@ class ModelUtil():
                 total += labels.size(0)
                 corrects += (predicts.cpu() == labels).sum().item()
 
-        return 100 * (corrects / total)
+        return corrects / total
 
-    def download_dataset(self, path: str = "./data", url: str = "https://drive.google.com/uc?export=download&id=1SA7wV7BwEpNoR721aUSauFvqCTfXba1h"):
-        """
-        Descrição
-        -------
-        Baixa o dataset do drive
-
-        Local em que o dataset será salvo
-        """
-        p = Path(path)
-        pzip = Path(p.name + ".zip")
-
-        if p.exists():
-            return
-
-        print("dowload from", url)
-        try:
-            gdown.download(url, pzip.name, quiet=False)
-        except Exception as err:
-            print("Arquivo não encontrado")
-            print(str(err))
-            return
-
-        with zipfile.ZipFile(pzip, 'r') as zip_ref:
-            zip_ref.extractall(p.parent)
-
-        os.remove(pzip)
-
-    def load_dataset(self, path: str = "./data", tranform: torch.nn.Module = None):
-        """
-        Descrição
-        --------
-        Carrega o Dataset
-
-        Entradas
-        --------
-        path: str
-        Diretorio que será montado as classes na seguinte extrutura
-        <path>
-        ├── bulbassauro
-        │   ├── imagem1.png
-        │   ├── imagem2.png
-        │   ├── ...
-        │   └── imagemN.py
-        ├── pikachu
-        │   ├── imagem1.png
-        │   ├── imagem2.png
-        │   ├── ...
-        │   └── imagemN.py
-        ...
-
-        tranform: torch Tranform
-        Transformaçoes a serem aplicadas no dataset
-        Se não for defenido será usado o default_tranform
-        """
-        if not Path(path).exists():
-            raise Exception('Dataset not found')
-
-        if tranform is None:
-            tranform = default_transform
-
-        self.dataset = datasets.ImageFolder(root=path,
-                                            transform=tranform)
-        self.dataset_classes = self.dataset.classes
-
-    def split_dataset(self, tresh_hold: float = 0.8):
-        """
-        Descrição
-        --------
-        Separa o dataset carregado em dois grupos dividido pelo tresh_hold
-        obs: precisa ter o datasetCarregado
-
-        Entradas
-        --------
-        tresh_hold: float
-        Porcentagem de treino em relação ao dataset original
-        """
-        nDivision = [round(len(self.dataset) * tresh_hold),
-                     round(len(self.dataset) * (1-tresh_hold))]
-        self.dataset_splited = torch.utils.data.random_split(
-            self.dataset, nDivision)
-
-    def dataset_loader(self, batch_size: int = 4, num_workers: int = 4):
-        """
-        Descrição
-        --------
-        Carrega o Dataset e separa ele em dois grupos: de treino e validação e os transforma em bachs
-
-        Entradas
-        --------
-        batch_size: int
-        Tamanho de cada batch
-
-        num_workers: int
-        Quantidade de subprocessos
-        """
-
-        self.dataloaders = [torch.utils.data.DataLoader(d, batch_size=batch_size, shuffle=True, num_workers=num_workers)
-                            for d in self.dataset_splited]
-
-    def dataset_load_all(self, path: str = "./data", tranform: torch.nn.Module = None, tresh_hold: float = 0.8, batch_size: int = 4, num_workers: int = 4):
-        """Vê as documentações das outras ai por favor, nunca te pedi nada"""
-        self.download_dataset(path)
-        self.load_dataset(path, tranform)
-        self.split_dataset(tresh_hold)
-        self.dataset_loader(batch_size, num_workers)
-
-    def show(self):
-        print(self.model.eval())
-
-    def loadModel(self, file: str = "weights.pkl", drive: bool = True, url: str = "https://drive.google.com/uc?export=download&id=1yC0qK0gVX5sc6GTpBPBupH3TSFssLkqS") -> nn.Module:
+    def load(
+        self,
+        file: str = "weights.pkl",
+        drive: bool = True,
+        drive_id: str = "1yC0qK0gVX5sc6GTpBPBupH3TSFssLkqS",
+    ) -> nn.Module:
         """
         Descrição
         --------
@@ -276,7 +167,7 @@ class ModelUtil():
         Precisa ter a variavel model inicializada
 
         Entradas
-        --------   
+        --------
         file: (Path)
         Caso drive = False, representa o caminho para o
         arquivo onde o modelo será carregado.
@@ -284,32 +175,28 @@ class ModelUtil():
         o modelo será salvo.
 
         drive: (Bool)
-        Define se o modelos será carregado do Google Drive 
+        Define se o modelos será carregado do Google Drive
         ou localmente
 
-        url: (Url)
-        Endereço de onde o arquivo deverá ser baixado, caso
+        drive_id: (str)
+        Id do drive que está hospedado
         drive = True.
 
         """
         if drive:
-            try:
-                gdown.download(url, file, quiet=False)
-            except Exception as err:
-                print(str(err))
-                print("Rede pré treinada não pode ser baixada.")
+            gdown.download(DRIVE_URL + drive_id, file, quiet=False)
 
-        st = torch.load(file, map_location=self.device)
-        self.model.load_state_dict(st)
+        model_st = torch.load(file, map_location=self.device)
+        self.model.load_state_dict(model_st)
 
-    def saveModel(self, filename: str, path: str = "") -> Type[None]:
+    def save(self, filename: str, path: str = "") -> Type[None]:
         """
         Salva um PyTorch model, no path e nome desejados, com extensão .pkl
         ---------------
         Argumentos:
-            - model: PyTorch model (torch.nn.Module) 
+            - model: PyTorch model (torch.nn.Module)
             - path: string contendo o path para salvar o modelo
             - filename: string contendo o nome do arquivo salvo
         """
-        p = os.path.join(path, filename)
-        torch.save(self.model.state_dict(), p)
+        filepath = Path(path) / filename
+        torch.save(self.model.state_dict(), filepath)

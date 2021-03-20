@@ -3,13 +3,12 @@ Site base: https://bulbapedia.bulbagarden.net/wiki/Bulbapedia
 """
 
 from typing import List
+from hashlib import md5
 import requests
 from ..util.pokedex import pokedex
-from hashlib import md5
-from ..util.image_repository import downloadImgs
 
 
-def _imgName2url(imgName: str):
+def _img_name_to_url(img_name: str):
     """
     Descrição
     --------
@@ -17,7 +16,7 @@ def _imgName2url(imgName: str):
 
     Entradas
     --------
-    imgName: str
+    img_name: str
     nome da imagem
 
     Saídas
@@ -27,16 +26,17 @@ def _imgName2url(imgName: str):
 
     """
 
-    filename = imgName.strip("File:").replace(" ", "_").encode("utf-8")
+    filename = img_name.strip("File:").replace(" ", "_").encode("utf-8")
 
     # a estrutura do diretório da imagem é composto usando o hash md5 do nome do arquivo.
     # Documentado em: https://www.mediawiki.org/wiki/Manual:$wgHashedUploadDirectory
-    hashedFilename = md5(filename).hexdigest()
-    link = f"https://archives.bulbagarden.net/media/upload/{hashedFilename[0]}/{hashedFilename[0:2]}/{filename.decode('utf-8')}"
+    hashed_filename = md5(filename).hexdigest()
+    link = f"https://archives.bulbagarden.net/media/upload/{hashed_filename[0]}/{hashed_filename[0:2]}/{filename.decode('utf-8')}"
+
     return link
 
 
-def getImagesURLbyId(id: int) -> List[str]:
+def get_image_url_by_id(pokemon_id: int) -> List[str]:
     """
     Descrição
     --------
@@ -44,7 +44,7 @@ def getImagesURLbyId(id: int) -> List[str]:
 
     Entradas
     --------
-    id: int
+    pokemon_id: int
     Numero da pokedex do pokemon
 
     Saídas
@@ -53,9 +53,7 @@ def getImagesURLbyId(id: int) -> List[str]:
     Lista de urls encontradas
 
     """
-    print(f"> Pushando #{id} de bulbagarden.com")
-
-    pokemon = pokedex[id]
+    pokemon = pokedex[pokemon_id]
 
     url = "https://archives.bulbagarden.net/w/api.php"
     params = {
@@ -74,34 +72,5 @@ def getImagesURLbyId(id: int) -> List[str]:
         params["cmcontinue"] = resp["continue"]["cmcontinue"]
         resp = requests.get(url, params).json()
         members = resp["query"]["categorymembers"]
-        links += [_imgName2url(image["title"]) for image in members]
+        links += [_img_name_to_url(image["title"]) for image in members]
     return links
-
-
-def getImagesbyId(id: int) -> List[bytes]:
-    """
-    Descrição
-    --------
-    Descobre todas as imagens de um pokemon em https://bulbapedia.bulbagarden.net/wiki/Bulbapedia e as baixa
-
-    Entradas
-    --------
-    id: int
-    Numero da pokedex do pokemon
-
-    Saídas
-    ------
-    urls: List<str>
-    Lista de urls encontradas
-
-    """
-    urls = getImagesURLbyId(id)
-    imgs = downloadImgs(urls)
-    return imgs
-
-
-if __name__ == "__main__":
-    for id in range(1, 2):
-        urls = getImagesURLbyId(id)
-        print(len(urls))
-        print(*urls, sep="\n")
