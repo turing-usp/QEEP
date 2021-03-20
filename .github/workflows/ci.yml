@@ -11,8 +11,8 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v2
       
-      - name: Install linters
-        run: pip install -r requirements.dev.txt
+      - name: Install dependencies
+        run: pip install -r requirements.txt -r requirements.dev.txt
 
       - name: Run flake8
         run: flake8 .
