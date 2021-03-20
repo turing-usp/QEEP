@@ -1,5 +1,6 @@
 [flake8]
 ignore = E501, PLC0301
+extend-ignore = E203
 exclude = 
     .git,
     __pycache__

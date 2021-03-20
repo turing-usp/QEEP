@@ -8,3 +8,5 @@ lxml
 urllib3
 iteration_utilities
 Pillow
+imutils
+numpy
