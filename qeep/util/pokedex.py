@@ -22,6 +22,7 @@ class Pokemon:
     name: str
     Nome do pokemon
     """
+
     id: int = None
     name: str = None
 
@@ -38,7 +39,7 @@ class Pokemon:
 
 def _fillPokedex():
     """
-        Prenche a variavel global com os pokemons oriundos de um csv
+    Prenche a variavel global com os pokemons oriundos de um csv
     """
     global pokedex
     if pokedex is not None:
@@ -47,15 +48,16 @@ def _fillPokedex():
     pokedex = dict()
 
     response = requests.get(
-        "https://raw.githubusercontent.com/veekun/pokedex/master/pokedex/data/csv/pokemon.csv")
+        "https://raw.githubusercontent.com/veekun/pokedex/master/pokedex/data/csv/pokemon.csv"
+    )
 
     # Break in lines and remove header
-    pokedexData = response.text.split('\n')[1:]
+    pokedexData = response.text.split("\n")[1:]
     for pokedexLine in pokedexData:
-        if pokedexLine.strip(' ,') == '':
+        if pokedexLine.strip(" ,") == "":
             continue
 
-        [id, name, *_] = pokedexLine.split(',')
+        [id, name, *_] = pokedexLine.split(",")
         id = int(id)  # Grr odeio a tipagem fraca de python
         pokemon = Pokemon(id, name)
         pokedex[id] = pokemon

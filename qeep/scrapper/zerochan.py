@@ -43,13 +43,12 @@ def getImagesURLbyId(id: int) -> List[str]:
             break
 
         soup = BeautifulSoup(resp.text, features="lxml")
-        imgs = soup.find_all(
-            "img", {"alt": pokemon.name.capitalize()})
+        imgs = soup.find_all("img", {"alt": pokemon.name.capitalize()})
 
         if len(imgs) == 0:
             break
 
-        links += [img.get('src') for img in imgs]
+        links += [img.get("src") for img in imgs]
     return links
 
 

@@ -41,8 +41,8 @@ def getImagesURLbyId(id: int) -> List[str]:
     lazy_imgs = soup.find_all("span", {"data-src": re.compile(pattern)})
 
     links = []
-    links += [img.get('src') for img in imgs]
-    links += [img.get('data-src') for img in lazy_imgs]
+    links += [img.get("src") for img in imgs]
+    links += [img.get("data-src") for img in lazy_imgs]
 
     return links
 

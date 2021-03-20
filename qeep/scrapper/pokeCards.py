@@ -48,9 +48,15 @@ def getImagesURLbyId(id: int) -> List[str]:
             break
 
         soup = BeautifulSoup(response.text, features="lxml")
-        imgs = soup.find_all("img", {"src": re.compile(
-            "https://assets.pokemon.com/assets/cms2/img/cards/web/")})
-        local_links = [img.get('src') for img in imgs]
+        imgs = soup.find_all(
+            "img",
+            {
+                "src": re.compile(
+                    "https://assets.pokemon.com/assets/cms2/img/cards/web/"
+                )
+            },
+        )
+        local_links = [img.get("src") for img in imgs]
 
         # A ultima pagina é repetida quando vc acessa uma pagina que não existe
         if len(local_links) == 0 or local_links[-1] in links:
@@ -83,7 +89,7 @@ def crop(imgBytes: bytes) -> bytes:
 
     # https://stackoverflow.com/questions/33101935/convert-pil-image-to-byte-array#33117447
     imgByteOut = io.BytesIO()
-    img.save(imgByteOut, format='PNG')
+    img.save(imgByteOut, format="PNG")
     return imgByteOut.getvalue()
 
 

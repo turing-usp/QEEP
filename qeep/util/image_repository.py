@@ -33,8 +33,8 @@ def _resilientSession() -> requests.Session:
     session = requests.Session()
     retry = Retry(connect=5, backoff_factor=0.5)
     adapter = HTTPAdapter(max_retries=retry)
-    session.mount('http://', adapter)
-    session.mount('https://', adapter)
+    session.mount("http://", adapter)
+    session.mount("https://", adapter)
     return session
 
 
@@ -122,8 +122,8 @@ def writeImage(dir_path: Path, img: bytes) -> Path:
     local onde a imagem foi salva
 
     """
-    assert(dir_path.exists())
-    assert(dir_path.is_dir())
+    assert dir_path.exists()
+    assert dir_path.is_dir()
 
     hashname = md5(img).hexdigest()
     filename = hashname + _fileExtension(img)

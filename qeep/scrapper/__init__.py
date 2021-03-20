@@ -9,6 +9,7 @@ from . import pokemondb
 from . import pokemon
 from . import pokeCards
 from . import serebii
+
 # from . import zerochan
 
 from ..util import image_repository as repository

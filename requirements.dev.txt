@@ -1,5 +1,6 @@
 pre-commit
 pylint
+black
 flake8
 cohesion
 flake8-requirements
