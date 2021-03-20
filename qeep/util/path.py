@@ -1,9 +1,12 @@
+"""
+    Funções uteis para o Path
+"""
+
 from pathlib import Path
-import os
 from typing import Union
 
 
-def createDirIfNotExist(path: Union[Path, str]) -> None:
+def create_dir_if_not_exist(path: Union[Path, str]) -> None:
     """
     Descrição
     --------
@@ -24,4 +27,4 @@ def createDirIfNotExist(path: Union[Path, str]) -> None:
 
     if not path.exists():
         print("> Create dir:", path)
-        os.makedirs(path)
+        path.mkdir()

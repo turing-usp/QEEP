@@ -1,66 +1,27 @@
 """
-Site base: https://www.serebii.net
+    SerebiiScrapper
 """
 
 from typing import List
-import requests
 import re
 from bs4 import BeautifulSoup
-from ..util.image_repository import downloadImgs
+from .scrapper import Scrapper, Session
 
 
-def getImagesURLbyId(id: int) -> List[str]:
-    """
-    Descrição
-    --------
-    Descobre todas as imagens de um pokemon em https://serebii.net
+class SerebiiScrapper(Scrapper):
+    """Site base: https://www.serebii.net"""
 
-    Entradas
-    --------
-    id: int
-    Numero da pokedex do pokemon
+    def __init__(self, pokemon_id: int, session: Session):
+        Scrapper.__init__(self, pokemon_id, session)
 
-    Saídas
-    ------
-    urls: List<str>
-    Lista de urls encontradas
+    def get_images_url(self) -> List[str]:
+        """ Descobre todas as imagens no site"""
+        url = f"https://www.serebii.net/card/dex/{self.pokemon_id:03}.shtml"
 
-    """
-    print(f"> Pushando #{id} de serebii.net")
+        response = self.session.get(url, timeout=10)
+        soup = BeautifulSoup(response.text, features="lxml")
+        imgs = soup.find_all("img", {"src": re.compile("/card/th/.*.jpg")})
+        links = ["https://www.serebii.net" + img.get("src") for img in imgs]
 
-    url = f"https://www.serebii.net/card/dex/{id:03}.shtml"
-
-    response = requests.get(url)
-    soup = BeautifulSoup(response.text, features="lxml")
-    imgs = soup.find_all("img", {"src": re.compile("/card/th/.*.jpg")})
-    links = ["https://www.serebii.net" + img.get('src') for img in imgs]
-
-    artURL = f"https://www.serebii.net/art/th/{id}.png"
-    return [artURL] + links
-
-
-def getImagesbyId(id: int) -> List[bytes]:
-    """
-    Descrição
-    --------
-    Descobre todas as imagens de um pokemon em https://serebii.net e baixa
-
-    Entradas
-    --------
-    id: int
-    Numero da pokedex do pokemon
-
-    Saídas
-    ------
-    urls: List<str>
-    Lista de urls encontradas
-
-    """
-    urls = getImagesURLbyId(id)
-    imgs = downloadImgs(urls)
-    return imgs
-
-
-if __name__ == "__main__":
-    for id in range(1, 3):
-        print(getImagesURLbyId(id))
+        art_url = f"https://www.serebii.net/art/th/{self.pokemon_id}.png"
+        return [art_url] + links

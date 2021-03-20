@@ -1,7 +1,7 @@
 pre-commit
 pylint
+black
 flake8
-cohesion
 flake8-requirements
 flake8-implicit-str-concat
 flake8-nb
@@ -13,4 +13,5 @@ flake8-string-format
 flake8-printf-formatting
 flake8-mypy
 flake8-eradicate
+flake8-pylint
 vulture

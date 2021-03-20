@@ -1,57 +1,20 @@
 """
-Site base: https://gameinfo.io
+    GameInfoScrapper
 """
 
 from typing import List
-from ..util.image_repository import downloadImgs
+from .scrapper import Scrapper, Session
 
 
-def getImagesURLbyId(id: int) -> List[str]:
-    """
-    descrição
-    --------
-    descobre todas as imagens de um pokemon em https://gameinfo.io
+class GameInfoScrapper(Scrapper):
+    """Site base: https://gameinfo.io"""
 
-    entradas
-    --------
-    id: int
-    numero da pokedex do pokemon
+    def __init__(self, pokemon_id: int, session: Session):
+        Scrapper.__init__(self, pokemon_id, session)
 
-    saídas
-    ------
-    urls: list<str>
-    lista de urls encontradas
+    def get_images_url(self) -> List[str]:
+        """ Descobre todas as imagens no site"""
 
-    """
-    print(f"> Pushando #{id} de gamainfo.io")
-
-    normalImg = f"https://images.gameinfo.io/pokemon/256/{id:03}-00.png"
-    shineImg = f"https://images.gameinfo.io/pokemon/256/{id:03}-00-shiny.png"
-    return [normalImg, shineImg]
-
-
-def getImagesbyId(id: int) -> List[bytes]:
-    """
-    descrição
-    --------
-    descobre todas as imagens de um pokemon em https://gameinfo.io e as baixa
-
-    entradas
-    --------
-    id: int
-    numero da pokedex do pokemon
-
-    saídas
-    ------
-    imgs: list<bytes>
-    lista de imagens
-
-    """
-    urls = getImagesURLbyId(id)
-    imgs = downloadImgs(urls)
-    return imgs
-
-
-if __name__ == "__main__":
-    for id in range(1, 3):
-        print(getImagesURLbyId(id))
+        normal_img = f"https://images.gameinfo.io/pokemon/256/{self.pokemon_id:03}-00.png"
+        shine_img = f"https://images.gameinfo.io/pokemon/256/{self.pokemon_id:03}-00-shiny.png"
+        return [normal_img, shine_img]
