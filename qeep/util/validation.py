@@ -1,11 +1,11 @@
-import torch
-from torch.utils.data import DataLoader
+from typing import List
 import numpy as np
 import matplotlib.pyplot as plt
-from torchvision import transforms
+import torch
+from torch.utils.data import DataLoader
 from torch.autograd import Variable
+from torchvision import transforms
 from PIL import Image
-from typing import List
 
 
 def modelAccuracy(
@@ -162,14 +162,14 @@ def _getOnePrediction(
     Tensor com o output da rede para a imagem
     passada
     """
-    # model.eval()
+    model.eval()
     with torch.no_grad():
         image = _tensorLoader(image_array, loader)
         outputs = model(image)
         _, preds = torch.max(outputs, 1)
         if not quiet:
             tensorImshow(
-                image.cpu().data[0], "predicted: {}".format(class_names[preds])
+                image.cpu().data[0], f"predicted: {class_names[preds]}"
             )
 
     return outputs

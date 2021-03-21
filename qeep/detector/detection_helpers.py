@@ -33,7 +33,7 @@ def sliding_window(image: Image, step: int, ws: tuple) -> Image:
 
 
 def image_pyramid(
-    image: Image, scale: float = 1.5, minSize: tuple = (224, 224)
+    image: Image, scale: float = 1.5, min_size: tuple = (224, 224)
 ) -> Image:
     """
     Descrição
@@ -63,7 +63,7 @@ def image_pyramid(
         w = int(image.shape[1] / scale)
         image = imutils.resize(image, width=w)
         # condição de parada: se a imagem ficar menor que o tamanho minimo permitido
-        if image.shape[0] < minSize[1] or image.shape[1] < minSize[0]:
+        if image.shape[0] < min_size[1] or image.shape[1] < min_size[0]:
             break
         # yield the next image in the pyramid
         yield image
@@ -88,5 +88,5 @@ def img_to_array(img: Image) -> np.array:
     if len(x.shape) == 2:
         x = x.reshape((x.shape[0], x.shape[1], 1))
     elif len(x.shape) != 3:
-        raise ValueError("Unsupported image shape: %s" % (x.shape,))
+        raise ValueError(f"Unsupported image shape: {x.shape}")
     return x

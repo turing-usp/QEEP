@@ -6,23 +6,21 @@
 
 import json
 import argparse
-import imutils
 import time
-import cv2
+from typing import Type, Tuple, Callable, List
+import imutils
+import cv2  # noqa: I900
 import torch
 import numpy as np
-from typing import List
 import PIL as Image
-from typing import Type
-from typing import Tuple
 from imutils.object_detection import non_max_suppression
-from qeep.detector.detection_helpers import (
+from .detection_helpers import (
     img_to_array,
     sliding_window,
     image_pyramid,
 )
-from qeep.util.validation import getPredictions
-from qeep.classificador.mobilenet import MobileNet
+from ..util.validation import getPredictions
+from ..classificador.mobilenet import MobileNet
 
 
 def get_rois(
@@ -62,7 +60,7 @@ def get_rois(
     localização de cada roi na imagem original
     """
     # Inicializa a pirâmide da imagem
-    pyramid = image_pyramid(original_img, scale=PYR_SCALE, minSize=ROI_SIZE)
+    pyramid = image_pyramid(original_img, scale=PYR_SCALE, min_size=ROI_SIZE)
     # Inicializa a lista de ROIs (Regiões de Interesse) geradas pela
     # pirâmide e pela sliding window, e a lista de coordenadas (x, y)
     # para guardar a posição de cada ROI na imagem original
@@ -72,7 +70,7 @@ def get_rois(
     start = time.time()
 
     # Dimensões da imagem original
-    (H, W) = original_img.shape[:2]
+    (_, W) = original_img.shape[:2]
 
     # Aplica o algoritmo da pirâmide sobre a imagem
     for image in pyramid:
@@ -112,9 +110,7 @@ def get_rois(
     end = time.time()
     # Duração do pré-processamento da imagem original
     print(
-        "[INFO] O pré-processamento da imagem durou {:.5f} segundos".format(
-            end - start
-        )
+        f"[INFO] O pré-processamento da imagem durou {end - start:.5f} segundos"
     )
 
     return rois, locs
@@ -155,11 +151,7 @@ def classify_rois(
 
     # Tempo final da classificação das ROIs
     end = time.time()
-    print(
-        "[INFO] A classificalão das ROIs durou {:.5f} segundos".format(
-            end - start
-        )
-    )
+    print(f"[INFO] A classificalão das ROIs durou {end - start:.5f} segundos")
 
     # Inicializa a lista de predições das ROIs
     results = []
@@ -211,28 +203,28 @@ def filter_detections(
     # Itera sobre todas as predições de cada ROI
     for (i, p) in enumerate(preds):
         # Separa as informações da ROI atual
-        (imagenetID, label, prob) = p
+        (_, label, prob) = p
         # Filtra as detecções com baixa prioridade de acordo com min_conf
         if prob >= min_conf:
             # Seleciona a bounding box da predição
             box = locs[i]
-            # Caso a chave label exista no dicionário labels, guarda seu valor em L
-            # Se não, guarda uma lista vazia em L
-            L = labels.get(label, [])
+            # Caso a chave label exista no dicionário labels, guarda seu valor em lab
+            # Se não, guarda uma lista vazia em lab
+            lab = labels.get(label, [])
             # Adiciona a bounding box e sua probabilidade no dicionário de labels
-            L.append((box, prob))
-            labels[label] = L
+            lab.append((box, prob))
+            labels[label] = lab
 
     # Itera sobre cada uma das classes detectadas
-    for label in labels.keys():
-        print("[INFO] Apresentando os resutados para '{}'".format(label))
+    for label in labels:
+        print(f"[INFO] Apresentando os resutados para '{label}'")
 
         # Checa se as bounding boxes encontradas devem ser mostradas
         if visualize > 0:
             # Clona a imagem original para desenhar as bounding boxes
             clone = original_img.copy()
             # Itera sobre todas as bounding boxes da classe atual
-            for (box, prob) in labels[label]:
+            for (box, _) in labels[label]:
                 # Desenha as bounding bouxes na imagem
                 (startX, startY, endX, endY) = box
                 cv2.rectangle(
@@ -265,6 +257,16 @@ def filter_detections(
         cv2.imshow("Predicoes", clone)
         cv2.waitKey(0)
         cv2.destroyAllWindows()
+
+
+def read_tuple(text: str, cast_function: Callable = str) -> tuple:
+    """
+    Lê uma string que tem uma tupla, convertendo os parametros pela função de cast.
+    ex: `read_tuple('(1, 2)', int) == (1,2)`
+    """
+    without_brackets = text.strip("()")
+    values = [cast_function(i) for i in without_brackets.split(",")]
+    return tuple(values)
 
 
 if __name__ == "__main__":
@@ -304,12 +306,12 @@ if __name__ == "__main__":
     WIDTH = 600
     PYR_SCALE = 1.5
     WIN_STEP = 16
-    ROI_SIZE = eval(args["size"])
+    ROI_SIZE = read_tuple(args["size"], int)
 
     # Carregamento do modelo
     print("[INFO] Carregando o modelo...")
     model = MobileNet(151)
-    # model.loadModel()
+    # model.loadModel() # noqa: E800
     model = model.model.eval()
     # Carrega a imagem selecionada
     image = cv2.imread(args["image"])

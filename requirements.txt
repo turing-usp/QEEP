@@ -9,4 +9,6 @@ urllib3
 iteration_utilities
 Pillow
 imutils
+opencv-python
+matplotlib
 numpy
