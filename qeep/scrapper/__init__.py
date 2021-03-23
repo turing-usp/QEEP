@@ -4,7 +4,6 @@
 
 from typing import List
 from pathlib import Path
-from multiprocessing import Pool
 from iteration_utilities import deepflatten
 
 from .gameinfo import GameInfoScrapper
@@ -36,10 +35,12 @@ class PokemonScrapper(Scrapper):
         ]
 
     def get_images_url(self) -> List[str]:
-        return deepflatten([s.get_images_url() for s in self.scrappers])
+        return deepflatten(
+            [s.get_images_url() for s in self.scrappers], depth=1
+        )
 
     def get_images(self) -> List[bytes]:
-        return deepflatten([s.get_images() for s in self.scrappers])
+        return deepflatten([s.get_images() for s in self.scrappers], depth=1)
 
 
 req_session = resilient_session()
@@ -64,8 +65,10 @@ def get_all_images_and_save_by_ids(ids: List[int], base_path: Path):
 
     def save_pokemon_images(pokemon_id: int):
         poke_path = base_path / pokedex[pokemon_id].name
+        poke_scrapper = PokemonScrapper(pokemon_id, req_session)
         create_dir_if_not_exist(poke_path)
-        PokemonScrapper(pokemon_id, req_session).save(poke_path)
+        return poke_scrapper.save(poke_path)
 
-    with Pool(_NUMBER_POOLS) as pool:
-        pool.map(save_pokemon_images, ids)
+    create_dir_if_not_exist(base_path)
+    for i in ids:
+        save_pokemon_images(i)
