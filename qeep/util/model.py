@@ -223,7 +223,7 @@ class ModelUtil:
         """
         if isinstance(image, bytes):
             image = Image.fromarray(image)
-        elif isinstance(image, str) or isinstance(image, Path):
+        elif isinstance(image, (str, Path)):
             print("Open image")
             image = Image.open(image)
 
@@ -236,7 +236,7 @@ class ModelUtil:
         self,
         image: Union[str, Path, bytes],
         verbose: bool = False,
-    ) -> torch.Tensor:
+    ) -> (torch.Tensor, str):
         """
         Descrição
         --------
@@ -255,19 +255,22 @@ class ModelUtil:
         outputs: torch.Tensor
         Tensor com o output da rede para a imagem
         passada
+        lable: str
+        Label da resposta
         """
         self.model.eval()
         with torch.no_grad():
             image = self._tensor_loader(image).to(self.device)
             outputs = self.model(image)
             _, preds = torch.max(outputs, 1)
+            label = self.class_names[preds]
             if verbose:
                 tensor_imshow(
                     image.cpu().data[0],
-                    f"predicted: {self.class_names[preds]}",
+                    f"predicted: {label}",
                 )
 
-        return self.class_names[preds]
+        return outputs, label
 
 
 def tensor_imshow(tensor: torch.Tensor, title: str = None):

@@ -3,6 +3,7 @@
 """
 
 import json
+import sys
 import argparse
 import torch
 import torch.nn as nn
@@ -231,6 +232,6 @@ if __name__ == "__main__":
 
     if (not parse_args.is_train) and (parse_args.img_path is None):
         print("input image is required to run")
-        exit(1)
+        sys.exit(1)
 
     _main(parse_args)

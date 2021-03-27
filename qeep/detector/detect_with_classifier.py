@@ -19,7 +19,6 @@ from .detection_helpers import (
     sliding_window,
     image_pyramid,
 )
-from ..util.validation import getPredictions
 from ..classificador.mobilenet import MobileNet
 
 
@@ -142,9 +141,8 @@ def classify_rois(
     start = time.time()
 
     # Classifica cada uma das ROIs utilizando o modelo
-    preds = getPredictions(
-        model, class_names=classes, image_arrays=rois, quiet=True
-    )
+    preds = [model.predict(img)[0] for img in rois]
+
     # Transforma as predições em um array
     preds = list(map(lambda x: x.detach().cpu().numpy(), preds))
     preds = np.array(preds)
