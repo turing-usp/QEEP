@@ -206,7 +206,7 @@ class ModelUtil:
         filepath = Path(path) / filename
         torch.save(self.model.state_dict(), filepath)
 
-    def _tensor_loader(self, image: Union[Path, bytes, Image]):
+    def _tensor_loader(self, image: Union[str, Path, bytes]):
         """
         Descrição
         --------
@@ -214,27 +214,28 @@ class ModelUtil:
         da imagem e do transformador
         Entradas
         --------
-        image: Path | bytes | PIL.Image
+        image: str | Path | bytes | PIL.Image
         Imagem a ser vonvertida
         Saídas
         ------
         image: torch.Tensor
         Tensor em torch da imagem carregada
         """
-        if image is bytes:
-            image = Image.fromarray(image, mode="RGB")
-        elif image is Path:
+        if isinstance(image, bytes):
+            image = Image.fromarray(image)
+        elif isinstance(image, str) or isinstance(image, Path):
+            print("Open image")
             image = Image.open(image)
 
-        image = transforms.Compose(self.transforms)(image)
+        image = transforms.Compose(self.transforms)(image.convert("RGB"))
         image = Variable(image, requires_grad=False)
         image = image.unsqueeze(0)
         return image
 
-    def predictict(
+    def predict(
         self,
-        image: bytes,
-        verbose: bool = True,
+        image: Union[str, Path, bytes],
+        verbose: bool = False,
     ) -> torch.Tensor:
         """
         Descrição
@@ -243,7 +244,7 @@ class ModelUtil:
         uma imagem em análise
         Entradas
         --------
-        image: Union[Path, bytes, Image]
+        image: Union[str, Path, bytes, Image]
         Imagem a ser categorizada
 
         verbose: bool
@@ -257,7 +258,7 @@ class ModelUtil:
         """
         self.model.eval()
         with torch.no_grad():
-            image = self._tensor_loader(image)
+            image = self._tensor_loader(image).to(self.device)
             outputs = self.model(image)
             _, preds = torch.max(outputs, 1)
             if verbose:
@@ -266,7 +267,7 @@ class ModelUtil:
                     f"predicted: {self.class_names[preds]}",
                 )
 
-        return outputs
+        return self.class_names[preds]
 
 
 def tensor_imshow(tensor: torch.Tensor, title: str = None):

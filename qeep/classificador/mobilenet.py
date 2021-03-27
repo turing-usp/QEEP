@@ -2,6 +2,7 @@
     MobileNet
 """
 
+import json
 import argparse
 import torch
 import torch.nn as nn
@@ -16,7 +17,9 @@ class MobileNet(ModelUtil):
     MobileNet
     """
 
-    def __init__(self, output_size: int, freeze: bool = True):
+    def __init__(
+        self, output_size: int, class_names: [str] = None, freeze: bool = True
+    ):
         model = torch.hub.load(
             "pytorch/vision:v0.6.0", "mobilenet_v2", pretrained=True
         )
@@ -28,6 +31,7 @@ class MobileNet(ModelUtil):
         model.classifier.add_module("2", nn.Softmax())
 
         self.model = model.to(self.device)
+        self.class_names = class_names
 
 
 def _main(args: argparse.Namespace):
@@ -36,7 +40,9 @@ def _main(args: argparse.Namespace):
     if args.load:
         mobilenet.load("mobilenet_weights.pkl")
 
-    mobilenet.show()
+    if args.show:
+        mobilenet.show()
+
     if args.is_train:
         trasnform_augumentation = mobilenet.transforms + [
             transforms.RandomHorizontalFlip(),
@@ -45,6 +51,7 @@ def _main(args: argparse.Namespace):
         dataset = PokeDataset(trasnform_augumentation, args.dataset_path)
         dataset.download(args.dataset_url)
         dataset.load()
+        mobilenet.class_names = dataset.dataset_classes
         dataset.split(args.dataset_tresh_hold)
         [train_dl, val_dl, *_] = dataset.loaders(
             args.dataloader_batch_size,
@@ -72,6 +79,10 @@ def _main(args: argparse.Namespace):
             val_dl,
             epochs=args.epochs,
         )
+    else:
+        with open(args.class_names_path) as classes_file:
+            mobilenet.class_names = json.load(classes_file)
+        print(mobilenet.predict(args.img_path))
 
     if args.save:
         mobilenet.save(args.save)
@@ -80,6 +91,15 @@ def _main(args: argparse.Namespace):
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(description="Treina na mobilet")
+
+    parser.add_argument(
+        "--show",
+        dest="show",
+        default=False,
+        type=bool,
+        help="Mostra a rede",
+    )
+
     parser.add_argument(
         "--load",
         dest="load",
@@ -89,9 +109,24 @@ if __name__ == "__main__":
     )
 
     parser.add_argument(
+        "--input",
+        dest="img_path",
+        type=str,
+        help="Imagem que servirá de entrada para o modelo",
+    )
+
+    parser.add_argument(
+        "--classes",
+        dest="class_names_path",
+        default="./classes.json",
+        type=str,
+        help="Path do json com as classes",
+    )
+
+    parser.add_argument(
         "--train",
         dest="is_train",
-        default=True,
+        default=False,
         type=bool,
         help="Define que o modelo deve ser treinado",
     )
@@ -193,5 +228,9 @@ if __name__ == "__main__":
     )
 
     parse_args = parser.parse_args()
+
+    if (not parse_args.is_train) and (parse_args.img_path is None):
+        print("input image is required to run")
+        exit(1)
 
     _main(parse_args)
