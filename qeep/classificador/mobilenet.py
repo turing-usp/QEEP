@@ -29,7 +29,7 @@ class MobileNet(ModelUtil):
                 param.requires_grad = False
         num_ftrs = model.classifier[-1].in_features
         model.classifier[-1] = nn.Linear(num_ftrs, output_size)
-        model.classifier.add_module("2", nn.Softmax())
+        model.classifier.add_module("2", nn.LogSoftmax())
 
         self.model = model.to(self.device)
         self.class_names = class_names
