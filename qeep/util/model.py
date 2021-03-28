@@ -2,15 +2,19 @@
     Basic model funcitons
 """
 
-from typing import Type, List
+from typing import Type, List, Union
 import time
 from pathlib import Path
 import copy
+from PIL import Image
 from torchvision import transforms
 import gdown
 import torch
 import torch.nn as nn
 import torch.optim as optim
+from torch.autograd import Variable
+import numpy as np
+import matplotlib.pyplot as plt
 
 DRIVE_URL = "https://drive.google.com/uc?export=download&id="
 
@@ -21,6 +25,7 @@ class ModelUtil:
     """
 
     model: torch.nn.Module
+    class_names: List[str]
 
     def __call__(self, value):
         """ Allow self(x) name """
@@ -200,3 +205,99 @@ class ModelUtil:
         """
         filepath = Path(path) / filename
         torch.save(self.model.state_dict(), filepath)
+
+    def _tensor_loader(self, image: Union[str, Path, bytes]):
+        """
+        Descrição
+        --------
+        Carrega o tensor a partir do endereço
+        da imagem e do transformador
+        Entradas
+        --------
+        image: str | Path | bytes | PIL.Image
+        Imagem a ser vonvertida
+        Saídas
+        ------
+        image: torch.Tensor
+        Tensor em torch da imagem carregada
+        """
+        if isinstance(image, bytes):
+            image = Image.fromarray(image)
+        elif isinstance(image, (str, Path)):
+            print("Open image")
+            image = Image.open(image)
+
+        image = transforms.Compose(self.transforms)(image.convert("RGB"))
+        image = Variable(image, requires_grad=False)
+        image = image.unsqueeze(0)
+        return image
+
+    def predict(
+        self,
+        image: Union[str, Path, bytes],
+        verbose: bool = False,
+    ) -> (torch.Tensor, str):
+        """
+        Descrição
+        --------
+        Encontra a predição da rede para apenas
+        uma imagem em análise
+        Entradas
+        --------
+        image: Union[str, Path, bytes, Image]
+        Imagem a ser categorizada
+
+        verbose: bool
+        Variável que ativa o print das imagens
+        focando apenas no retorno
+        Saídas
+        ------
+        outputs: torch.Tensor
+        Tensor com o output da rede para a imagem
+        passada
+        lable: str
+        Label da resposta
+        """
+        self.model.eval()
+        with torch.no_grad():
+            image = self._tensor_loader(image).to(self.device)
+            outputs = self.model(image)
+            _, preds = torch.max(outputs, 1)
+            label = self.class_names[preds]
+            if verbose:
+                tensor_imshow(
+                    image.cpu().data[0],
+                    f"predicted: {label}",
+                )
+
+        return outputs, label
+
+
+def tensor_imshow(tensor: torch.Tensor, title: str = None):
+    """
+    Descrição
+    --------
+    Mostra a imagem em tensores, ajustando
+    seus valores de média e desvio padrão
+    Entradas
+    --------
+    tensor: torch.Tensor
+    Tensor em torch que deve ser mostrado
+    title: str
+    Título a ser mostrado pela imagem
+    Saídas
+    ------
+    None
+    """
+
+    tensor = tensor.numpy().transpose((1, 2, 0))
+    mean = np.array([0.485, 0.456, 0.406])
+    std = np.array([0.229, 0.224, 0.225])
+    tensor = std * tensor + mean
+    tensor = np.clip(tensor, 0, 1)
+    plt.imshow(tensor)
+    plt.axis("off")
+    if title is not None:
+        plt.title(title)
+    plt.pause(0.001)  # pause a bit so that plots are updated
+    plt.show()
