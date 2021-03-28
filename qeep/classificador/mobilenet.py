@@ -83,7 +83,7 @@ def _main(args: argparse.Namespace):
     else:
         with open(args.class_names_path) as classes_file:
             mobilenet.class_names = json.load(classes_file)
-        print(mobilenet.predict(args.img_path))
+        print(mobilenet.predict(args.img_path)[1])
 
     if args.save:
         mobilenet.save(args.save)
@@ -104,7 +104,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--load",
         dest="load",
-        default=False,
+        default=True,
         type=bool,
         help="Carrega os pesos do modelo",
     )

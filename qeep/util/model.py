@@ -160,7 +160,7 @@ class ModelUtil:
         self,
         file: str = "weights.pkl",
         drive: bool = True,
-        drive_id: str = "1yC0qK0gVX5sc6GTpBPBupH3TSFssLkqS",
+        drive_id: str = "1SpWaLYVv6CqKT-9uTA2PoLLvG_CzeIU9",
     ) -> nn.Module:
         """
         Descrição
