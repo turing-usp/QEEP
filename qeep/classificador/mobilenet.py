@@ -50,7 +50,7 @@ def _main(args: argparse.Namespace):
             transforms.RandomVerticalFlip(),
         ]
         dataset = PokeDataset(trasnform_augumentation, args.dataset_path)
-        dataset.download(args.dataset_url)
+        dataset.download(args.dataset_url_id)
         dataset.load()
         mobilenet.class_names = dataset.dataset_classes
         dataset.split(args.dataset_tresh_hold)
@@ -141,9 +141,9 @@ if __name__ == "__main__":
     )
 
     parser.add_argument(
-        "--dataset-url",
-        dest="dataset_url",
-        default="https://drive.google.com/uc?export=download&id=1SA7wV7BwEpNoR721aUSauFvqCTfXba1h",
+        "--dataset-url-id",
+        dest="dataset_url_id",
+        default="1SA7wV7BwEpNoR721aUSauFvqCTfXba1h",
         type=str,
         help="URL do drive na qual o dataset será baixado",
     )

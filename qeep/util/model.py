@@ -107,8 +107,10 @@ class ModelUtil:
                 if phase == "train":
                     scheduler.step()
 
-                epoch_loss = running_loss
-                epoch_acc = running_corrects.double()
+                epoch_loss = running_loss / len(dataloaders[phase].dataset)
+                epoch_acc = running_corrects.double() / len(
+                    dataloaders[phase].dataset
+                )
 
                 print(f"{phase} Loss: {epoch_loss:.4f} Acc: {epoch_acc:.4f}")
 
