@@ -118,6 +118,7 @@ class PokeDataset:
             root=self.datasetpath, transform=self.tranform
         )
         self.dataset_classes = self.dataset.classes
+        return self.dataset
 
     def split(self, tresh_hold: float = 0.8):
         """
@@ -142,6 +143,7 @@ class PokeDataset:
         self.dataset_splited = torch.utils.data.random_split(
             self.dataset, n_division
         )
+        return self.dataset_splited
 
     def loaders(
         self, batch_size: int = 4, num_workers: int = 4, shuffle: bool = True
