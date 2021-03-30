@@ -5,7 +5,7 @@ Site base: https://www.zerochan.net/pikachu?p=2
 from typing import List
 import requests
 from bs4 import BeautifulSoup
-from ..util.pokedex import pokedex
+from util.pokedex import pokedex
 
 
 def get_images_url_by_id(pokemon_id: int) -> List[str]:

@@ -19,7 +19,7 @@ from .detection_helpers import (
     sliding_window,
     image_pyramid,
 )
-from ..classificador.mobilenet import MobileNet
+from classificador.mobilenet import MobileNet
 
 
 def get_rois(
