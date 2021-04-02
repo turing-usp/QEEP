@@ -137,7 +137,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--save",
         dest="save",
-        default="mobilenet_weight.pkl",
+        default="mobilenet.pkl",
         type=str,
         help="Para salvar o modelo",
     )

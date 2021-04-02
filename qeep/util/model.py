@@ -207,7 +207,7 @@ class ModelUtil:
             - filename: string contendo o nome do arquivo salvo
         """
         filepath = Path(path) / filename
-        torch.save(self.model.state_dict(), filepath)
+        torch.save(self.model, filepath)
 
     def _tensor_loader(self, image: Union[str, Path, bytes]):
         """

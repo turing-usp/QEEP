@@ -20,15 +20,16 @@ class MobileNet(ModelUtil):
     def __init__(
         self, output_size: int, class_names: [str] = None, freeze: bool = True
     ):
-        model = torch.hub.load(
-            "pytorch/vision:v0.6.0", "mobilenet_v2", pretrained=True
-        )
-        if freeze:
-            for param in model.parameters():
-                param.requires_grad = False
-        num_ftrs = model.classifier[-1].in_features
-        model.classifier[-1] = nn.Linear(num_ftrs, output_size)
-        model.classifier.add_module("2", nn.LogSoftmax())
+        # model = torch.load(
+        #     "pytorch/vision:v0.6.0", "mobilenet_v2", pretrained=True
+        # )
+        model = torch.load('mobilenet.pkl')
+        # if freeze:
+        #     for param in model.parameters():
+        #         param.requires_grad = False
+        # num_ftrs = model.classifier[-1].in_features
+        # model.classifier[-1] = nn.Linear(num_ftrs, output_size)
+        # model.classifier.add_module("2", nn.LogSoftmax())
 
         self.model = model.to(self.device)
         self.class_names = class_names
@@ -82,7 +83,7 @@ def run(args: argparse.Namespace):
     else:
         with open(args.class_names_path) as classes_file:
             mobilenet.class_names = json.load(classes_file)
-        print(mobilenet.predict(args.img_path)[1])
+        # print(mobilenet.predict(args.img_path)[1])
 
     if args.save:
         mobilenet.save(args.save)
