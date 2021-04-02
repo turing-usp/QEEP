@@ -7,7 +7,7 @@ import io
 from typing import List
 from bs4 import BeautifulSoup
 from PIL import Image
-from ..util.pokedex import pokedex
+from util.pokedex import pokedex
 from .scrapper import Scrapper, Session
 
 FILTER_CARDS = "basic-pokemon=on&stage-1-pokemon=on&stage-2-pokemon=on&level-up-pokemon=on&ex-pokemon=on&mega-ex=on&special-pokemon=on&pokemon-legend=on&restored-pokemon=on&break=on&pokemon-gx=on&pokemon-v=on&pokemon-vmax=on"

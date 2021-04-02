@@ -5,7 +5,7 @@ Site base: https://bulbapedia.bulbagarden.net/wiki/Bulbapedia
 from typing import List
 from hashlib import md5
 import requests
-from ..util.pokedex import pokedex
+from util.pokedex import pokedex
 
 
 def _img_name_to_url(img_name: str):

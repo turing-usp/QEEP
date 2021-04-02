@@ -5,7 +5,7 @@
 from typing import List
 import re
 from bs4 import BeautifulSoup
-from ..util.pokedex import pokedex
+from util.pokedex import pokedex
 from .scrapper import Scrapper, Session
 
 

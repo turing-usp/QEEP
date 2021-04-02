@@ -12,8 +12,8 @@ from .pokemon_oficial import PokemonOficialScrapper
 from .pokemon_oficial_cards import PokemonOficialCardsScrapper
 from .serebii import SerebiiScrapper
 
-from ..util.pokedex import pokedex
-from ..util.path import create_dir_if_not_exist
+from util.pokedex import pokedex
+from util.path import create_dir_if_not_exist
 from .scrapper import Scrapper, resilient_session, Session
 
 _NUMBER_POOLS = 6
