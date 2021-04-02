@@ -32,7 +32,7 @@ def run(image, size="(200, 150)", min_conf=-0.01, visualize=False):
     # Carregamento do modelo
     print("[INFO] Carregando o modelo...")
     model = MobileNet(151)
-    model.load(file="mobilenet_weight.pkl", drive=False)  # noqa: E800
+    model.load(drive=True)  # noqa: E800
     model.model.eval()
 
     with open("classes.json") as classes_file:
