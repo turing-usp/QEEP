@@ -160,9 +160,9 @@ class ModelUtil:
 
     def load(
         self,
-        file: str = "weights.pkl",
+        file: str = "weights_full.pkl",
         drive: bool = True,
-        drive_id: str = "1SpWaLYVv6CqKT-9uTA2PoLLvG_CzeIU9",
+        drive_id: str = "1zlzTroTJUPG942fBKrzmTOBRUOFNXuur",
     ) -> nn.Module:
         """
         Descrição
@@ -191,7 +191,8 @@ class ModelUtil:
 
         """
         if drive:
-            gdown.download(DRIVE_URL + drive_id, file, quiet=False)
+            if not Path(file).exists():
+                gdown.download(DRIVE_URL + drive_id, file, quiet=False)
 
         model_st = torch.load(file, map_location=self.device)
         self.model.load_state_dict(model_st)
