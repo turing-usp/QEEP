@@ -14,7 +14,7 @@ import torch
 import numpy as np
 import PIL as Image
 from imutils.object_detection import non_max_suppression
-from .detection_helpers import (
+from detector.detection_helpers import (
     img_to_array,
     sliding_window,
     image_pyramid,
@@ -85,9 +85,9 @@ def get_rois(
             w = int(ROI_SIZE[0] * scale)
             h = int(ROI_SIZE[1] * scale)
             # Transforma a ROI (PIL Image) em array para a classificação
-            roi = img_to_array(original_roi)
+            #roi = img_to_array(original_roi)
             # Atualiza a lista de ROIS e a lista de coordenadas
-            rois.append(roi)
+            rois.append(original_roi)
             locs.append((x, y, x + w, y + h))
 
             # Checa se as sliding windows devem ser mostradas
@@ -214,8 +214,10 @@ def filter_detections(
             labels[label] = lab
 
     # Itera sobre cada uma das classes detectadas
+    # Clona a imagem original para desenhar as bounding boxes
+    clone = original_img.copy()
     for label in labels:
-        print(f"[INFO] Apresentando os resutados para '{label}'")
+        #print(f"[INFO] Apresentando os resutados para '{label}'")
 
         # Checa se as bounding boxes encontradas devem ser mostradas
         if visualize > 0:
@@ -230,8 +232,8 @@ def filter_detections(
                 )
             cv2.imshow("Debug", clone)
 
-        # Clona a imagem original para desenhar as bounding boxes
-        clone = original_img.copy()
+
+        
         # Aplica a técnica de non-maxima supression nas predições da classe atual
         boxes = np.array([p[0] for p in labels[label]])
         proba = np.array([p[1] for p in labels[label]])
@@ -252,10 +254,7 @@ def filter_detections(
                 (0, 255, 0),
                 2,
             )
-        cv2.imshow("Predicoes", clone)
-        cv2.waitKey(0)
-        cv2.destroyAllWindows()
-
+    return clone
 
 def read_tuple(text: str, cast_function: Callable = str) -> tuple:
     """
@@ -309,8 +308,11 @@ if __name__ == "__main__":
     # Carregamento do modelo
     print("[INFO] Carregando o modelo...")
     model = MobileNet(151)
-    # model.loadModel() # noqa: E800
-    model = model.model.eval()
+    model.load(file="mobilenet_weight.pkl",drive=False) # noqa: E800
+    model.model.eval()
+
+    with open("classes.json") as classes_file:
+        model.class_names = json.load(classes_file)
     # Carrega a imagem selecionada
     image = cv2.imread(args["image"])
     image = imutils.resize(image, width=WIDTH)
@@ -319,7 +321,12 @@ if __name__ == "__main__":
     rois, locs = get_rois(
         image, PYR_SCALE, WIN_STEP, ROI_SIZE, args["visualize"]
     )
+
     predictions = classify_rois(model, rois, classes)
-    filter_detections(
+    results = filter_detections(
         image, predictions, locs, args["min_conf"], args["visualize"]
     )
+    cv2.imshow("Predicoes", results)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
+

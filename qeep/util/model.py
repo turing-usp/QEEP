@@ -228,7 +228,7 @@ class ModelUtil:
         elif isinstance(image, (str, Path)):
             print("Open image")
             image = Image.open(image)
-
+        image = Image.fromarray(image)
         image = transforms.Compose(self.transforms)(image.convert("RGB"))
         image = Variable(image, requires_grad=False)
         image = image.unsqueeze(0)
