@@ -1,14 +1,28 @@
-import boto3
+import os
+import io
 from predict import run
 import cv2
+import boto3
 
-def lambda_handler(event, context):
+OUTPUT_BUCKET = os.getenv("OUTPUT_BUCKET")
+
+
+def handler(event, context):
     print(event)
-    sender, message, time = event["sender"], event["message"], event["time"]
-    handle_response(sender, message, time)
+    print(event["body"])
 
-if __name__ == "__main__":
-    result = run("poke.jpg",min_conf=-0.01, visualize=-1)
-    cv2.imshow("Predicoes", result)
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
+    record = event["Records"][0]
+
+    s3bucket = record["s3"]["bucket"]["name"]
+    s3object = record["s3"]["object"]["key"]
+
+    s3Path = "s3://" + s3bucket + "/" + s3object
+
+    image = cv2.imread(s3Path)
+    results = run(image)
+
+    _, buffer = cv2.imencode(".jpg", results)
+    io_buffer = io.BytesIO(buffer)
+
+    s3client = boto3.client("s3")
+    s3client.upload_fileobj(io_buffer, OUTPUT_BUCKET, s3object)

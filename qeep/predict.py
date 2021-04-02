@@ -38,7 +38,8 @@ def run(image, size="(200, 150)", min_conf=-0.01, visualize=False):
     with open("classes.json") as classes_file:
         model.class_names = json.load(classes_file)
     # Carrega a imagem selecionada
-    image = cv2.imread(image)
+    if isinstance(image, str):
+        image = cv2.imread(image)
     image = imutils.resize(image, width=WIDTH)
 
     # Roda o detector
@@ -46,7 +47,6 @@ def run(image, size="(200, 150)", min_conf=-0.01, visualize=False):
 
     predictions = classify_rois(model, rois, classes)
     results = filter_detections(image, predictions, locs, min_conf, visualize)
-
 
     return results
 
@@ -80,9 +80,7 @@ if __name__ == "__main__":
     )
     args = vars(ap.parse_args())
 
-    result = run(
-        args["image"], args["size"], -0.01  , -1
-    )
+    result = run(args["image"], args["size"], -0.01, -1)
 
     if args["visualize"]:
         cv2.imshow("Predicoes", result)
