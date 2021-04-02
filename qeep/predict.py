@@ -18,7 +18,7 @@ from detector.detect_with_classifier import (
 from classificador.mobilenet import MobileNet
 
 
-def run(image, size=(200, 150), min_conf=-0.01, visualize=False):
+def run(image, size="(200, 150)", min_conf=-0.01, visualize=False):
 
     with open("classes.json", mode="r") as f:
         classes = json.load(f)
@@ -32,7 +32,7 @@ def run(image, size=(200, 150), min_conf=-0.01, visualize=False):
     # Carregamento do modelo
     print("[INFO] Carregando o modelo...")
     model = MobileNet(151)
-    model.load(file="mobilenet_weight.pkl", drive=True)  # noqa: E800
+    model.load(file="mobilenet_weight.pkl", drive=False)  # noqa: E800
     model.model.eval()
 
     with open("classes.json") as classes_file:
@@ -46,6 +46,7 @@ def run(image, size=(200, 150), min_conf=-0.01, visualize=False):
 
     predictions = classify_rois(model, rois, classes)
     results = filter_detections(image, predictions, locs, min_conf, visualize)
+
 
     return results
 
@@ -80,7 +81,7 @@ if __name__ == "__main__":
     args = vars(ap.parse_args())
 
     result = run(
-        args["image"], args["size"], args["min_conf"], args["visualize"]
+        args["image"], args["size"], -0.01  , -1
     )
 
     if args["visualize"]:
