@@ -1,14 +1,18 @@
-import json
+#! /usr/bin/python3
+
 import argparse
+import json
+
 import cv2  # noqa: I900
 import imutils
+
+from qeep.classificador.mobilenet import MobileNetBasic
 from qeep.detector.detect_with_classifier import (
-    get_rois,
     classify_rois,
     filter_detections,
+    get_rois,
     read_tuple,
 )
-from qeep.classificador.mobilenet import MobileNetBasic
 
 if __name__ == "__main__":
     # Arg parser

@@ -7,8 +7,8 @@ import torch.optim as optim
 from torchvision import transforms
 
 from qeep.classificador.mobilenet import MobileNetBasic  # noqa: I900
-from qeep.classificador.pokenet import PokeMobileNet  # noqa: I900
 from qeep.classificador.model_base import ModelUtil  # noqa: I900
+from qeep.classificador.pokenet import PokeMobileNet  # noqa: I900
 from qeep.dataset.dataset import PokeDataset  # noqa: I900
 
 
