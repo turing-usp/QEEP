@@ -14,12 +14,11 @@ import torch
 import numpy as np
 import PIL as Image
 from imutils.object_detection import non_max_suppression
-from detector.detection_helpers import (
-    img_to_array,
+from qeep.detector.detection_helpers import (
     sliding_window,
     image_pyramid,
 )
-from classificador.mobilenet import MobileNet
+from qeep.classificador.pokenet import PokeMobileNet
 
 
 def get_rois(
@@ -85,7 +84,6 @@ def get_rois(
             w = int(ROI_SIZE[0] * scale)
             h = int(ROI_SIZE[1] * scale)
             # Transforma a ROI (PIL Image) em array para a classificação
-            #roi = img_to_array(original_roi)
             # Atualiza a lista de ROIS e a lista de coordenadas
             rois.append(original_roi)
             locs.append((x, y, x + w, y + h))
@@ -217,7 +215,6 @@ def filter_detections(
     # Clona a imagem original para desenhar as bounding boxes
     clone = original_img.copy()
     for label in labels:
-        #print(f"[INFO] Apresentando os resutados para '{label}'")
 
         # Checa se as bounding boxes encontradas devem ser mostradas
         if visualize > 0:
@@ -232,8 +229,6 @@ def filter_detections(
                 )
             cv2.imshow("Debug", clone)
 
-
-        
         # Aplica a técnica de non-maxima supression nas predições da classe atual
         boxes = np.array([p[0] for p in labels[label]])
         proba = np.array([p[1] for p in labels[label]])
@@ -255,6 +250,7 @@ def filter_detections(
                 2,
             )
     return clone
+
 
 def read_tuple(text: str, cast_function: Callable = str) -> tuple:
     """
@@ -307,8 +303,7 @@ if __name__ == "__main__":
 
     # Carregamento do modelo
     print("[INFO] Carregando o modelo...")
-    model = MobileNet(151)
-    model.load(file="mobilenet_weight.pkl",drive=False) # noqa: E800
+    model = PokeMobileNet()
     model.model.eval()
 
     with open("classes.json") as classes_file:
@@ -329,4 +324,3 @@ if __name__ == "__main__":
     cv2.imshow("Predicoes", results)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
-

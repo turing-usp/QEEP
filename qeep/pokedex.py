@@ -3,9 +3,8 @@
     prenchendo a variavel local pokedex com um dicionario de pokemons
 """
 
+from typing import Dict, Union
 import requests
-
-pokedex = {}
 
 
 class Pokemon:
@@ -62,4 +61,5 @@ def _fill_pokedex(acc):
         acc[name] = pokemon
 
 
+pokedex: Dict[Union[str, int], Pokemon] = {}
 _fill_pokedex(pokedex)

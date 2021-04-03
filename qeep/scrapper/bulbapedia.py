@@ -5,7 +5,7 @@ Site base: https://bulbapedia.bulbagarden.net/wiki/Bulbapedia
 from typing import List
 from hashlib import md5
 import requests
-from util.pokedex import pokedex
+from qeep.pokedex import pokedex  # noqa: PLE0611, PLE0401
 
 
 def _img_name_to_url(img_name: str):

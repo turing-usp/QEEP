@@ -1,25 +1,14 @@
 import json
 import argparse
-import time
-from typing import Type, Tuple, Callable, List
-import imutils
 import cv2  # noqa: I900
-import torch
-import numpy as np
-import PIL as Image
-from imutils.object_detection import non_max_suppression
-from detector.detection_helpers import (
-    img_to_array,
-    sliding_window,
-    image_pyramid,
-)
-from detector.detect_with_classifier import (
+import imutils
+from qeep.detector.detect_with_classifier import (
     get_rois,
     classify_rois,
     filter_detections,
-    read_tuple
+    read_tuple,
 )
-from classificador.mobilenet import MobileNet
+from qeep.classificador.mobilenet import MobileNetBasic
 
 if __name__ == "__main__":
     # Arg parser
@@ -61,8 +50,8 @@ if __name__ == "__main__":
 
     # Carregamento do modelo
     print("[INFO] Carregando o modelo...")
-    model = MobileNet(151)
-    model.load(file="mobilenet_weight.pkl",drive=False) # noqa: E800
+    model = MobileNetBasic(151)
+    model.load(file="mobilenet_weight.pkl", drive=False)  # noqa: E800
     model.model.eval()
 
     with open("classes.json") as classes_file:
