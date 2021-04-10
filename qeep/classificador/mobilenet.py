@@ -1,7 +1,7 @@
 from typing import List
 
 import torch
-import torch.nn as nn
+from torch import nn
 from qeep.classificador.model_base import ModelUtil
 
 
@@ -16,7 +16,7 @@ class MobileNetBasic(ModelUtil):
         class_names: List[str] = None,
         freeze: bool = True,
     ):
-        model = torch.hub.load(
+        model = torch.load(
             "pytorch/vision:v0.6.0", "mobilenet_v2", pretrained=True
         )
         if freeze:
