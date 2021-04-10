@@ -2,19 +2,20 @@
     Basic model funcitons
 """
 
-from typing import List, Union, Tuple
+import copy
 import time
 from pathlib import Path
-import copy
-from PIL import Image
-from torchvision import transforms
+from typing import List, Tuple, Union
+
 import gdown
+import matplotlib.pyplot as plt
+import numpy as np
 import torch
 import torch.nn as nn
 import torch.optim as optim
+from PIL import Image
 from torch.autograd import Variable
-import numpy as np
-import matplotlib.pyplot as plt
+from torchvision import transforms
 
 DRIVE_URL = "https://drive.google.com/uc?export=download&id="
 
@@ -189,7 +190,6 @@ class ModelUtil:
         drive: (Bool)
         Define se o modelos será carregado do Google Drive
         ou localmente
-
         drive_id: (str)
         Id do drive que está hospedado
         drive = True.
