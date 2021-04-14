@@ -1,0 +1,115 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+*::before,
+*::after {
+  box-sizing: inherit;
+}
+
+html {
+  font-size: 62.5%;
+}
+body {
+  display: flex;
+  flex-wrap: wrap;
+  background-color: #fcf3e2;
+  font-family: Nunito, Roboto, "Open Sans";
+  font-style: normal;
+  font-weight: bold;
+  font-size: 14px;
+  line-height: 19px;
+  color: rgba(0, 0, 0, 0.5);
+}
+
+footer {
+  width: 100vw;
+  background-color: #ebe5d9;
+  display: flex;
+  justify-content: space-between;
+  padding: 4px 8px;
+}
+
+footer div{
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: center;
+}
+.left-wrapper,
+.right-wrapper {
+  /* width: 50vw; */
+  padding: 50px 75px;
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+}
+
+.left-wrapper p {
+  width: 100vw;
+  padding-top: 20px;
+  padding-bottom: 60px;
+}
+
+.qeep-logo {
+  width: 268px;
+  height: 126px;
+}
+
+.input-image {
+  width: 389px;
+  height: 186px;
+  margin-bottom: 32px;
+}
+
+.button {
+  background-color: red;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50vw;
+  padding: 8px 16px;
+  margin: 6px;
+  box-shadow: 2px 2px 4px 1px #444;
+}
+
+.button:hover {
+  cursor: pointer;
+  box-shadow: none;
+}
+
+.button span {
+  color: #fff;
+  font-size: 16px;
+  margin-left: 8px;
+}
+
+.button img {
+  width: 29px;
+  height: 29px;
+}
+
+.blue {
+  background-color: #578cf3;
+}
+
+.green {
+  background-color: #2fa76c;
+}
+
+.info {
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+  font-weight: bold;
+  margin-top: 86px;
+}
+
+@media (max-width: 600px) {
+  .left-wrapper,
+  .right-wrapper {
+    width: 100vw;
+  }
+}
