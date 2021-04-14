@@ -1,14 +1,15 @@
 import os
 import io
-from predict import run
 import cv2
 import boto3
 import numpy as np
+from qeep_predict import run
 
 OUTPUT_BUCKET = os.getenv("OUTPUT_BUCKET")
 
 
-def handler(event, context):
+def handler(event, _context):
+    """ AWS lambda function"""
     print(event)
 
     record = event["Records"][0]

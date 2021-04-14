@@ -1,11 +1,7 @@
-"""
-    SerebiiScrapper
-"""
-
 from typing import List
 import re
 from bs4 import BeautifulSoup
-from .scrapper import Scrapper, Session
+from qeep.scrapper.scrapper import Scrapper, Session
 
 
 class SerebiiScrapper(Scrapper):

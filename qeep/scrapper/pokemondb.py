@@ -2,11 +2,13 @@
     PokemonDBScrapper
 """
 
-from typing import List
 import re
+from typing import List
+
 from bs4 import BeautifulSoup
-from util.pokedex import pokedex
-from .scrapper import Scrapper, Session
+
+from qeep.pokedex import pokedex  # noqa: PLE0611, PLE0401
+from qeep.scrapper.scrapper import Scrapper, Session
 
 
 class PokemonDBScrapper(Scrapper):

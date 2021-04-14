@@ -2,19 +2,20 @@
     Basic model funcitons
 """
 
-from typing import Type, List, Union
+import copy
 import time
 from pathlib import Path
-import copy
-from PIL import Image
-from torchvision import transforms
+from typing import List, Tuple, Union
+
 import gdown
+import matplotlib.pyplot as plt
+import numpy as np
 import torch
 import torch.nn as nn
 import torch.optim as optim
+from PIL import Image
 from torch.autograd import Variable
-import numpy as np
-import matplotlib.pyplot as plt
+from torchvision import transforms
 
 DRIVE_URL = "https://drive.google.com/uc?export=download&id="
 
@@ -57,8 +58,9 @@ class ModelUtil:
         train_dataloader: torch.utils.data.DataLoader,
         val_dataloader: torch.utils.data.DataLoader,
         epochs: int = 25,
+        verbose: bool = False,
     ):
-        """ Train function with gradient descendent """
+        """ treina um modelo pelo gradient descendente """
 
         since = time.time()
 
@@ -68,8 +70,9 @@ class ModelUtil:
         dataloaders = {"train": train_dataloader, "val": val_dataloader}
 
         for epoch in range(epochs):
-            print(f"Epoch {epoch}/{epochs - 1}")
-            print("-" * 10)
+            if verbose:
+                print(f"Epoch {epoch}/{epochs - 1}")
+                print("-" * 10)
 
             # Each epoch has a training and validation phase
             for phase in ["train", "val"]:
@@ -112,14 +115,18 @@ class ModelUtil:
                     dataloaders[phase].dataset
                 )
 
-                print(f"{phase} Loss: {epoch_loss:.4f} Acc: {epoch_acc:.4f}")
+                if verbose:
+                    print(
+                        f"{phase} Loss: {epoch_loss:.4f} Acc: {epoch_acc:.4f}"
+                    )
 
                 # deep copy the model
                 if phase == "val" and epoch_acc > best_acc:
                     best_acc = epoch_acc
                     best_model_wts = copy.deepcopy(self.model.state_dict())
 
-            print()
+            if verbose:
+                print()
 
         time_elapsed = time.time() - since
         print(
@@ -131,7 +138,7 @@ class ModelUtil:
         self.model.load_state_dict(best_model_wts)
         return self.model
 
-    def accuracy(self, dataloader: torch.utils.data.DataLoader = None):
+    def accuracy(self, dataloader: torch.utils.data.DataLoader):
         """
         Descrição
         --------
@@ -160,10 +167,57 @@ class ModelUtil:
 
     def load(
         self,
-        file: str = "weights_full.pkl",
-        drive: bool = True,
-        drive_id: str = "1zlzTroTJUPG942fBKrzmTOBRUOFNXuur",
-    ) -> nn.Module:
+        file: str,
+        drive_id: str,
+    ):
+        """
+        Descrição
+        --------
+        Carrega uma rede a ser utilizada como modelo
+
+        Requisitos
+        --------
+        Precisa ter a variavel model inicializada
+
+        Entradas
+        --------
+        file: (Path)
+        Caso drive = False, representa o caminho para o
+        arquivo onde o modelo será carregado.
+        Caso drive = True, representa o caminho para onde
+        o modelo será salvo.
+
+        drive: (Bool)
+        Define se o modelos será carregado do Google Drive
+        ou localmente
+        drive_id: (str)
+        Id do drive que está hospedado
+        drive = True.
+
+        """
+        if drive_id is not None:
+            gdown.download(DRIVE_URL + drive_id, file, quiet=False)
+
+        self.model = torch.load(file, map_location=self.device)
+
+    def save(self, filepath: Union[Path, str]):
+        """
+        Salva um PyTorch model, no path e nome desejados, com extensão .pkl
+        ---------------
+        Argumentos:
+            - model: PyTorch model (torch.nn.Module)
+            - path: string contendo o path para salvar o modelo
+            - filename: string contendo o nome do arquivo salvo
+        """
+        if isinstance(filepath, str):
+            filepath = Path(filepath)
+        torch.save(self.model, filepath)
+
+    def load_state_dict(
+        self,
+        file: str,
+        drive_id: str,
+    ):
         """
         Descrição
         --------
@@ -190,14 +244,13 @@ class ModelUtil:
         drive = True.
 
         """
-        if drive:
-            if not Path(file).exists():
-                gdown.download(DRIVE_URL + drive_id, file, quiet=False)
+        if drive_id is not None:
+            gdown.download(DRIVE_URL + drive_id, file, quiet=False)
 
         model_st = torch.load(file, map_location=self.device)
         self.model.load_state_dict(model_st)
 
-    def save(self, filename: str, path: str = "") -> Type[None]:
+    def save_sate_dict(self, filepath: Union[Path, str]):
         """
         Salva um PyTorch model, no path e nome desejados, com extensão .pkl
         ---------------
@@ -206,8 +259,9 @@ class ModelUtil:
             - path: string contendo o path para salvar o modelo
             - filename: string contendo o nome do arquivo salvo
         """
-        filepath = Path(path) / filename
-        torch.save(self.model, filepath)
+        if isinstance(filepath, str):
+            filepath = Path(filepath)
+        torch.save(self.model.state_dict(), filepath)
 
     def _tensor_loader(self, image: Union[str, Path, bytes]):
         """
@@ -239,7 +293,7 @@ class ModelUtil:
         self,
         image: Union[str, Path, bytes],
         verbose: bool = False,
-    ) -> (torch.Tensor, str):
+    ) -> Tuple[torch.Tensor, str]:
         """
         Descrição
         --------

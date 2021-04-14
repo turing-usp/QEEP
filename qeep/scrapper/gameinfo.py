@@ -1,9 +1,5 @@
-"""
-    GameInfoScrapper
-"""
-
 from typing import List
-from .scrapper import Scrapper, Session
+from qeep.scrapper.scrapper import Scrapper, Session
 
 
 class GameInfoScrapper(Scrapper):

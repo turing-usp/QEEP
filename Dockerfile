@@ -9,6 +9,6 @@ COPY requirements.txt .
 
 RUN ["pip", "install", "-r", "requirements.txt", "--no-cache-dir"]
 
-COPY ./qeep .
+COPY . .
 
-CMD ["app.handler"]
+CMD ["qeep_app.handler"]
