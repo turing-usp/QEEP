@@ -1,0 +1,11 @@
+FROM public.ecr.aws/lambda/python:3.8
+
+WORKDIR /var/task
+
+COPY requirements.txt .
+
+RUN ["pip", "install", "filetype", "--no-cache-dir"]
+
+COPY . .
+
+CMD ["qeep_api.lambda_handler"]
