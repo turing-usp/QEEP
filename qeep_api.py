@@ -3,7 +3,9 @@
 """
 import os
 import io
+import base64
 from hashlib import md5
+import json
 import boto3
 import filetype
 
@@ -33,10 +35,10 @@ def lambda_handler(event, _context):
 
     print(event)
 
-    buffer = event["body"]
+    buffer = base64.b64decode(event["body"])
     io_buffer = io.BytesIO(buffer)
 
-    filename = md5(buffer) + file_extension(buffer)
+    filename = md5(buffer).hexdigest() + file_extension(buffer)
     location = boto3.client("s3").get_bucket_location(Bucket=INPUT_BUCKET)[
         "LocationConstraint"
     ]
@@ -48,4 +50,6 @@ def lambda_handler(event, _context):
         f"https://{OUTPUT_BUCKET}.s3-{location}.amazonaws.com/{filename}"
     )
 
-    return {"statusCode": 202, "outputLink": outputlink}
+    response = {"statusCode": 202, "outputLink": outputlink}
+
+    return json.dumps(response)
