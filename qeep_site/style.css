@@ -40,7 +40,7 @@ footer div{
 }
 .left-wrapper,
 .right-wrapper {
-  /* width: 50vw; */
+  width: 50%;
   padding: 50px 75px;
   display: flex;
   flex-flow: column nowrap;
@@ -48,7 +48,6 @@ footer div{
 }
 
 .left-wrapper p {
-  width: 100vw;
   padding-top: 20px;
   padding-bottom: 60px;
 }
@@ -110,6 +109,6 @@ footer div{
 @media (max-width: 600px) {
   .left-wrapper,
   .right-wrapper {
-    width: 100vw;
+    width: 100%;
   }
 }
