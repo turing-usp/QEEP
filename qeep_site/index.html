@@ -15,8 +15,9 @@
         <p>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
         </p>
-        <div id="image-input" class="image-background">
+        <div class="image-background image-input-wrapper">
             <img src="images/Icon_camera.svg" alt="Camera">
+            <img style="display:none;" id="image-input" src="#" alt="">
         </div>
 
         <!-- Botão "Escolher Pokemon" -->
@@ -25,6 +26,7 @@
             <span>
                 Escolher Pokemon!
             </span>
+            <input style="display:none" id="pokefile" type="file" accept="image"/>
         </div>
         <!-- Saiba mais -->
         <div class="info">
@@ -61,5 +63,7 @@
         </div>
     </footer>
 
+
+    <script src="script.js"/>
 </body>
 </html>
