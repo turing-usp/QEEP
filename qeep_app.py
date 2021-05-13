@@ -9,7 +9,7 @@ OUTPUT_BUCKET = os.getenv("OUTPUT_BUCKET")
 
 
 def handler(event, _context):
-    """ Aws lambda function"""
+    """ AWS lambda function"""
     print(event)
 
     record = event["Records"][0]

@@ -6,8 +6,10 @@ on:
     paths: qeep_api.py
 
 env:
+  DOCKERFILE: Dockerfile.api
   AWS_REGION: sa-east-1                          # set this to your preferred AWS region, e.g. us-west-1
   ECR_REPOSITORY: turing/qeep_api
+  FUNC_NAME: turing-qeep-api
 
 jobs:
   deploy:
@@ -32,6 +34,7 @@ jobs:
     - name: Build, tag, and push image to Amazon ECR
       id: build-image
       env:
+        DOCKERFILE: ${{ env.DOCKERFILE }}
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         ECR_REPOSITORY: ${{ env.ECR_REPOSITORY }}
         IMAGE_TAG: ${{ github.sha }}
@@ -39,6 +42,14 @@ jobs:
         # Build a docker container and
         # push it to ECR so that it can
         # be deployed to ECS.
-        docker build -f Dockerfile.api -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+        docker build -f $DOCKERFILE -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
         echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+    - name: Change lambda image
+      id: lambda-image
+      env:
+        FUNC_NAME: ${{ env.FUNC_NAME }}
+        IMAGE_URI: ${{ steps.build-image.outputs.image }}
+      run: |
+        aws lambda update-function-code \
+        --function-name $FUNC_NAME --image-uri $IMAGE_URI
