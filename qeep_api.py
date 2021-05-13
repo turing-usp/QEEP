@@ -47,12 +47,10 @@ def lambda_handler(event, _context):
         f"https://{OUTPUT_BUCKET}.s3-{location}.amazonaws.com/{filename}"
     )
 
-    response = {
+    return {
         "statusCode": 202,
         "headers": {
             "Access-Control-Allow-Origin": "*",
         },
-        "body": {"outputlink": outputlink},
+        "body": json.dumps({"outputlink": outputlink}),
     }
-
-    return json.dumps(response)
