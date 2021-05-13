@@ -1,6 +1,3 @@
-"""
-   api front-lambda interface
-"""
 import os
 import io
 import base64
@@ -50,6 +47,10 @@ def lambda_handler(event, _context):
         f"https://{OUTPUT_BUCKET}.s3-{location}.amazonaws.com/{filename}"
     )
 
-    response = {"statusCode": 202, "outputLink": outputlink}
-
-    return json.dumps(response)
+    return {
+        "statusCode": 202,
+        "headers": {
+            "Access-Control-Allow-Origin": "*",
+        },
+        "body": json.dumps({"outputlink": outputlink}),
+    }
