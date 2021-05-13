@@ -2,7 +2,7 @@ name: Deploy API to Amazon ECR
 
 on:
   push:
-    # branches: [ master ]
+    branches: [ master ]
     paths: qeep_api.py
 
 env:

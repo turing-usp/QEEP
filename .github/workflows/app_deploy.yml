@@ -2,7 +2,7 @@ name: Deploy APP to Amazon ECR
 
 on:
   push:
-    # branches: [ master ]
+    branches: [ master ]
     paths:
       - qeep_app.py
       - qeep
