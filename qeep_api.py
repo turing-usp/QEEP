@@ -1,6 +1,3 @@
-"""
-   api front-lambda interface
-"""
 import os
 import io
 import base64

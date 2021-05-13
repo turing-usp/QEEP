@@ -1,17 +1,15 @@
-name: Deploy APP to Amazon ECR
+name: Deploy API to Amazon ECR
 
 on:
   push:
     # branches: [ master ]
-    paths:
-      - qeep_app.py
-      - qeep
+    paths: qeep_api.py
 
 env:
-  DOCKERFILE: Dockerfile.app
+  DOCKERFILE: Dockerfile.api
   AWS_REGION: sa-east-1                          # set this to your preferred AWS region, e.g. us-west-1
-  ECR_REPOSITORY: turing/qeep_app
-  FUNC_NAME: turing-qeep-app
+  ECR_REPOSITORY: turing/qeep_api
+  FUNC_NAME: turing-qeep-api
 
 jobs:
   deploy:
