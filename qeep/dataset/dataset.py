@@ -2,12 +2,13 @@
     PokeDataset
 """
 
-from typing import List
-from pathlib import Path
 import zipfile
+from pathlib import Path
+from typing import List
+
 import gdown
 import torch
-from torchvision import transforms, datasets
+from torchvision import datasets, transforms
 
 DRIVE_DOWNLOAD_URL = "https://drive.google.com/uc?export=download&id="
 
@@ -21,7 +22,6 @@ class PokeDataset:
     datasetpath: Path
     dataset: datasets.ImageFolder
     dataset_classes: List[str]
-    dataset_splited: List[torch.utils.data.Dataset]
 
     def __init__(
         self, tranforms: List[torch.nn.Module], datasetpath: str = "./data"
@@ -140,13 +140,14 @@ class PokeDataset:
             round(len(self.dataset) * tresh_hold),
             round(len(self.dataset) * (1 - tresh_hold)),
         ]
-        self.dataset_splited = torch.utils.data.random_split(
-            self.dataset, n_division
-        )
-        return self.dataset_splited
+        return torch.utils.data.random_split(self.dataset, n_division)
 
     def loaders(
-        self, batch_size: int = 4, num_workers: int = 4, shuffle: bool = True
+        self,
+        batch_size: int = 4,
+        num_workers: int = 4,
+        shuffle: bool = True,
+        tresh_hold: float = 0.8,
     ) -> List[torch.utils.data.DataLoader]:
         """
         Descrição
@@ -169,5 +170,5 @@ class PokeDataset:
                 shuffle=shuffle,
                 num_workers=num_workers,
             )
-            for d in self.dataset_splited
+            for d in self.split(tresh_hold)
         ]

@@ -1,6 +1,6 @@
 [flake8]
-ignore = E501, PLC0301, PLC0114, PLR0914, PLW0621, PLC0103
-exclude = 
+ignore = E501, PLC0301, PLC0114, PLR0914, PLW0621, PLC0103, PLR0903
+exclude =
     .git,
     __pycache__
 max-complexity = 11
