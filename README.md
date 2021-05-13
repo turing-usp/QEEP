@@ -1,6 +1,11 @@
-<img src="https://i.ibb.co/DtHQ3FG/802x265-Logo-GT.png" width="400"> 
+<img src="https://i.ibb.co/DtHQ3FG/802x265-Logo-GT.png" width="400">
 
 ## Grupo Turing
+
+[![prospector](https://github.com/turing-usp/QEEP/actions/workflows/ci.yml/badge.svg)](https://github.com/turing-usp/QEEP/actions/workflows/ci.yml)
+[![api lambda deploy](https://github.com/turing-usp/QEEP/actions/workflows/api_deploy.yml/badge.svg)](https://github.com/turing-usp/QEEP/actions/workflows/api_deploy.yml)
+[![code style](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+
 # Visão Computacional: Localização de Objetos
 #### Por: [Eduardo Eiras](https://github.com/dueiras);  [Camilla Fonseca](https://github.com/fonsecamilla); [Guilherme Salustiano](https://github.com/guissalustiano); [Luis Santos](https://github.com/luizsantos-1); [Luísa Heise](https://github.com/luisaheise); [Noel Eliezer](https://github.com/anor4k); [Rafael Coelho](https://github.com/rafael-acoelho); [Rodrigo Estevam](https://github.com/materloki); [Wesley de Almeida](https://github.com/WesPereira)
 Projeto da área Visão Computacional com o foco de fazer uma rede classificadora de objetos e a utilizar para criar um localizador de objetos.
