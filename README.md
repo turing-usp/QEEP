@@ -4,6 +4,7 @@
 
 [![prospector](https://github.com/turing-usp/QEEP/actions/workflows/ci.yml/badge.svg)](https://github.com/turing-usp/QEEP/actions/workflows/ci.yml)
 [![api lambda deploy](https://github.com/turing-usp/QEEP/actions/workflows/api_deploy.yml/badge.svg)](https://github.com/turing-usp/QEEP/actions/workflows/api_deploy.yml)
+[![app lambda deploy](https://github.com/turing-usp/QEEP/actions/workflows/app_deploy.yml/badge.svg)](https://github.com/turing-usp/QEEP/actions/workflows/app_deploy.yml)
 [![code style](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
 # Visão Computacional: Localização de Objetos
