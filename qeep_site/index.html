@@ -41,15 +41,22 @@
             </div>
         </div>
     </div>
+
     <!-- Lado direito -->
     <div class="right-wrapper">
         <span>
             Predição realizada:
         </span>
-        <div id="image-output" class="image-background">
+        <div class="image-background image-output-wrapper">
             <img src="images/Icon_camera.svg" alt="Camera">
+            <img style="display:none;" id="image-output" src="#" alt="">
+            <div style="display:none;" id="output-loading">
+                <div class="lds-dual-ring"></div>
+                <span> Sua imagem está sendo processada </span>
+            </div>
         </div>
     </div>
+
     <!-- Barra inferior -->
     <footer>
         <img src="images/Logo_Turing.svg" alt="Grupo Turing">
@@ -62,8 +69,6 @@
             </span>
         </div>
     </footer>
-
-
     <script src="script.js"/>
 </body>
 </html>

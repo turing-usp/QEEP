@@ -4,6 +4,8 @@ const QEEP_URL = "https://mcdxkzn708.execute-api.sa-east-1.amazonaws.com/qeep"
 
 const pokefile = document.getElementById("pokefile");
 const pokeinput = document.getElementById("image-input");
+const pokeoutput = document.getElementById("image-output");
+const pokeoutputloading = document.getElementById("output-loading");
 
 pokefile.parentElement.onclick = () => pokefile.click();
 
@@ -33,14 +35,36 @@ const uploadFile = (file) => {
   );
 }
 
+const waitFileShow = (src) => {
+    pokeoutput.previousElementSibling.style.display = "none"; // tira a imagem da camera
+    pokeoutputloading.style.display = "block"; // mostra carregamento
+
+    const tryUpdateImage = new Promise((resolve, reject) => {
+      const interval = setInterval(() => {
+        fetch(src)
+          .then((res) => {
+            console.log(res.status);
+            if (res.status === 404) {
+              console.log("esperando o ", src)
+              return;
+            }
+            clearInterval(interval);
+            resolve(res);
+          })
+      }, 30 * 1000);
+    });
+    tryUpdateImage.then(() => {
+      console.log("predição realizada com sucesso");
+      pokeoutput.style.display = "block";
+      pokeoutputloading.style.display = "none"; // mostra carregamento
+      pokeoutput.src = src;
+    });
+}
+
 pokefile.onchange = (e) => {
   const [file] = pokefile.files;
   if (file) {
     showInputFile(file);
-    uploadFile(
-      file
-    ).then(
-      outputlink => console.log("agora é só fazer esperar até o ", outputlink)
-    );
+    uploadFile(file).then(waitFileShow);
   }
 };
