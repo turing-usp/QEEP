@@ -20,17 +20,17 @@ body {
   font-family: Nunito, Roboto, "Open Sans";
   font-style: normal;
   font-weight: bold;
-  font-size: 14px;
-  line-height: 19px;
+  font-size: 1.4rem;
+  line-height: 1.9rem;
   color: rgba(0, 0, 0, 0.5);
 }
 
 footer {
-  width: 100vw;
+  width: 100%;
   background-color: #ebe5d9;
   display: flex;
   justify-content: space-between;
-  padding: 4px 8px;
+  padding: 0.4rem 0.8rem;
 }
 
 footer div{
@@ -41,20 +41,20 @@ footer div{
 .left-wrapper,
 .right-wrapper {
   width: 50%;
-  padding: 50px 75px;
+  padding: 5rem 7.5rem;
   display: flex;
   flex-flow: column nowrap;
   align-items: center;
 }
 
 .left-wrapper p {
-  padding-top: 20px;
-  padding-bottom: 60px;
+  padding-top: 2rem;
+  padding-bottom: 6rem;
 }
 
 .qeep-logo {
-  width: 268px;
-  height: 126px;
+  width: 26.8rem;
+  height: 12.6rem;
 }
 
 
@@ -64,8 +64,8 @@ footer div{
   align-items: center;
   justify-content: center;
   border-radius: 50vw;
-  padding: 8px 16px;
-  margin: 6px;
+  padding: 0.8rem 1.6rem;
+  margin: 0.6rem;
   box-shadow: 2px 2px 4px 1px #444;
 }
 
@@ -76,13 +76,13 @@ footer div{
 
 .button span {
   color: #fff;
-  font-size: 16px;
-  margin-left: 8px;
+  font-size: 1.6rem;
+  margin-left: .8rem;
 }
 
 .button img {
-  width: 29px;
-  height: 29px;
+  width: 2.9rem;
+  height: 2.9rem;
 }
 
 .blue {
@@ -98,7 +98,7 @@ footer div{
   flex-flow: column nowrap;
   align-items: center;
   font-weight: bold;
-  margin-top: 86px;
+  margin-top: 8.6rem;
 }
 
 .image-background {
@@ -109,17 +109,17 @@ footer div{
 
   width: 100%;
   background: rgba(196, 196, 196, 0.3);
-  border: 2px dashed rgba(0, 0, 0, 0.3);
+  border: 0.2rem dashed rgba(0, 0, 0, 0.3);
 }
 .image-input-wrapper {
-  width: 389px;
-  height: 186px;
-  margin-bottom: 32px;
+  width: 38.9rem;
+  height: 18.6rem;
+  margin-bottom: 3.2rem;
 }
 
 .image-output-wrapper {
-  height: 565px;
-  margin-top: 32px;
+  height: 56.5rem;
+  margin-top: 3.2rem;
 }
 
 #image-input,
@@ -145,18 +145,18 @@ footer div{
 /* https://loading.io/css/ */
 .lds-dual-ring {
   display: inline-block;
-  width: 40px;
-  height: 40px;
+  width: 4rem;
+  height: 4rem;
 }
 
 .lds-dual-ring:after {
   content: " ";
   display: block;
-  width: 32px;
-  height: 32px;
-  margin: 4px;
+  width: 3.2rem;
+  height: 3.2rem;
+  margin: .4rem;
   border-radius: 50%;
-  border: 6px solid #fff;
+  border: .6rem solid #fff;
   border-color: rgba(196, 196, 196, 0.3) transparent rgba(196, 196, 196, 0.3) transparent;
   animation: lds-dual-ring 1.2s linear infinite;
 }
