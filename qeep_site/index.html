@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Nunito">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QEEP Turing</title>
+</head>
+<body>
+    <!-- Lado esquerdo -->
+    <div class="left-wrapper">
+        <img class="qeep-logo" src="/images/Logo_qeep.svg" alt="QEEP Turing">
+        <p>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+        </p>
+        <div class="image-background image-input-wrapper">
+            <img src="/images/Icon_camera.svg" alt="Camera">
+            <img style="display:none;" id="image-input" src="#" alt="">
+        </div>
+
+        <!-- Botão "Escolher Pokemon" -->
+        <div class="button blue">
+            <img src="/images/Icon_pokeball.svg" alt="Pokebola">
+            <span>
+                Escolher Pokemon!
+            </span>
+            <input style="display:none" id="pokefile" type="file" accept="image/*"/>
+        </div>
+        <!-- Saiba mais -->
+        <div class="info">
+            <span>
+                Ficou interessado? Conheça mais sobre nosso trabalho
+            </span>
+            <div class="social-medias">
+                <a href="https://www.facebook.com/turing.usp" target="_blank">
+                    <img src="/images/facebook.svg" alt="nosso facebook">
+                </a>
+                <a href="https://www.instagram.com/turing.usp/" target="_blank">
+                    <img src="/images/instagram.svg" alt="nosso instagram">
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Lado direito -->
+    <div class="right-wrapper">
+        <span>
+            Predição realizada:
+        </span>
+        <div class="image-background image-output-wrapper">
+            <img src="/images/Icon_camera.svg" alt="Camera">
+            <img style="display:none;" id="image-output" src="#" alt="">
+            <div style="display:none;" id="output-loading">
+                <div class="lds-dual-ring"></div>
+                <span> Sua imagem está sendo processada </span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Barra inferior -->
+    <footer>
+        <img src="/images/Logo_Turing.svg" alt="Grupo Turing">
+        <div>
+            <span>
+                Todos os direitos reservados ao Grupo Turing
+            </span>
+            <span>
+                Contato: turing.usp@gmail.com
+            </span>
+        </div>
+    </footer>
+    <script src="/script.js"></script>
+</body>
+</html>

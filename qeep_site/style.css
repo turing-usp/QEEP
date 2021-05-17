@@ -1,0 +1,178 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+*::before,
+*::after {
+  box-sizing: inherit;
+}
+
+html {
+  font-size: 62.5%;
+}
+body {
+  display: flex;
+  flex-wrap: wrap;
+  background-color: #fcf3e2;
+  font-family: Nunito, Roboto, "Open Sans";
+  font-style: normal;
+  font-weight: bold;
+  font-size: 1.4rem;
+  line-height: 1.9rem;
+  color: rgba(0, 0, 0, 0.5);
+}
+
+footer {
+  width: 100%;
+  background-color: #ebe5d9;
+  display: flex;
+  justify-content: space-between;
+  padding: 0.4rem 0.8rem;
+}
+
+footer div{
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: center;
+}
+.left-wrapper,
+.right-wrapper {
+  width: 50%;
+  padding: 5rem 7.5rem;
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+}
+
+.left-wrapper p {
+  padding-top: 2rem;
+  padding-bottom: 6rem;
+}
+
+.qeep-logo {
+  width: 26.8rem;
+  height: 12.6rem;
+}
+
+
+.button {
+  background-color: red;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50vw;
+  padding: 0.8rem 1.6rem;
+  margin: 0.6rem;
+  box-shadow: 2px 2px 4px 1px #444;
+}
+
+.button:hover {
+  cursor: pointer;
+  box-shadow: none;
+}
+
+.button span {
+  color: #fff;
+  font-size: 1.6rem;
+  margin-left: .8rem;
+}
+
+.button img {
+  width: 2.9rem;
+  height: 2.9rem;
+}
+
+.blue {
+  background-color: #578cf3;
+}
+
+.social-medias {
+  display: flex;
+}
+
+.social-medias img {
+  margin: 0.8rem;
+  width: 5rem;
+  height: 5rem;
+}
+
+.info {
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+  font-weight: bold;
+  margin-top: 8.6rem;
+}
+
+.image-background {
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+  justify-content: center;
+
+  width: 100%;
+  background: rgba(196, 196, 196, 0.3);
+  border: 0.2rem dashed rgba(0, 0, 0, 0.3);
+}
+.image-input-wrapper {
+  width: 38.9rem;
+  height: 18.6rem;
+  margin-bottom: 3.2rem;
+}
+
+.image-output-wrapper {
+  height: 56.5rem;
+  margin-top: 3.2rem;
+}
+
+#image-input,
+#image-output {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+@media (max-width: 600px) {
+  .left-wrapper,
+  .right-wrapper {
+    width: 100%;
+  }
+}
+
+#output-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* https://loading.io/css/ */
+.lds-dual-ring {
+  display: inline-block;
+  width: 4rem;
+  height: 4rem;
+}
+
+.lds-dual-ring:after {
+  content: " ";
+  display: block;
+  width: 3.2rem;
+  height: 3.2rem;
+  margin: .4rem;
+  border-radius: 50%;
+  border: .6rem solid #fff;
+  border-color: rgba(196, 196, 196, 0.3) transparent rgba(196, 196, 196, 0.3) transparent;
+  animation: lds-dual-ring 1.2s linear infinite;
+}
+
+@keyframes lds-dual-ring {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
