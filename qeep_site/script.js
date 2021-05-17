@@ -64,6 +64,10 @@ const waitFileShow = (src) => {
 pokefile.onchange = (e) => {
   const [file] = pokefile.files;
   if (file) {
+    if (file.length > 16384) {
+      alert("Arquivo muito grande, por favor selecione arquivos menores que 16MB");
+      return;
+    }
     showInputFile(file);
     uploadFile(file).then(waitFileShow);
   }
