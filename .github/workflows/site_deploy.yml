@@ -1,4 +1,4 @@
-name: Deploy API to Amazon ECR
+name: Deploy site to s3
 
 on:
   push:
